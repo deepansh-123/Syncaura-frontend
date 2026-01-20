@@ -65,7 +65,7 @@ const AttendanceList = ({ LeaveData, currId, setCurrId }) => {
           </div>
         ))}
       </div>
-      <div className="flex md:hidden flex-col items-center justify-center gap-5 px-2 py-1">
+      <div className="flex md:hidden w-full flex-col items-center justify-center gap-5 px-2 py-1">
         {LeaveData.map(({ startDate, endDate, type, reason, status }, idx) => (
           <div key={idx} className="flex w-full flex-col px-5 sm:px-10 py-7 gap-5 rounded-2xl bg-[#FFFFFF] dark:bg-[#2E2F2F] shadow-[0_0_10px_1px_#EDEDED] dark:shadow-[2px_4px_10px_2px_rgba(255,255,255,0.3)] dark:border border-gray-500  ">
             <div className="flex flex-col xs:flex-row items-center flex-wrap justify-between w-full gap-y-4 ">

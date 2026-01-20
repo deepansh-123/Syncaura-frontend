@@ -60,6 +60,12 @@
   --font-poppin-reg: "Poppine-reg", sans-serif;
   --font-anta: "Anta", sans-serif;
   --breakpoint-xs: 370px;
+  --breakpoint-sm: 640px;
+--breakpoint-md: 768px;
+--breakpoint-lg: 1024px;
+--breakpoint-xl: 1280px;
+--breakpoint-2xl: 1536px;
+--breakpoint-page-2xl: 1650px;
 
 
 }

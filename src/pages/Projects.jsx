@@ -1,25 +1,33 @@
 import { ChevronDown, Ellipsis, Flag, ListFilter, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tab from "../components/projects/Tab";
 import ProjectCard from "../components/projects/ProjectCard";
 import { PROJECTS } from "../constant/constant";
 import CreateNewProject from "../components/projects/Model/CreateNewProject";
+import { AnimatePresence, motion } from "framer-motion";
+import ProjectFilter from "../components/projects/ProjectFilter";
 
 const Projects = () => {
   const [currTab, setCurrTab] = useState("All Projects");
-  const [selectedPriorityTab, setSelectedPriorityTab] = useState("High");
   const [showModel, setShowModel] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState(null);
   const tabData = [
     { title: "All Projects", count: PROJECTS.length },
     { title: "Ongoing", count: PROJECTS.filter((item) => item.priority === "Ongoing").length },
     { title: "Completed", count: PROJECTS.filter((item) => item.priority === "Completed").length },
     { title: "On Hold", count: PROJECTS.filter((item) => item.priority === "On Hold").length },
   ];
-  const priorityTab = ["Low", "Medium", "High", "Critical"];
+
   const filteredProjects =
     currTab === "All Projects"
       ? PROJECTS
       : PROJECTS.filter((item) => item.priority === currTab);
+
+
+  const handleApplyFilters = (newFilters) => {
+    setAppliedFilters(newFilters);
+  };
 
 
   return (
@@ -68,82 +76,37 @@ const Projects = () => {
               <ChevronDown className="size-5 text-[#082A44] dark:text-[#B2B2B2]" />
             </div>
 
-            {/* Filter */}
-            <div className="px-4 py-2 bg-white dark:bg-[#575757]
+            <button onClick={()=>setShowFilter((prev)=> !prev)} className={`px-4 py-2  
                     flex items-center gap-2
-                    border rounded-xl
-                    border-[#EAECEF] dark:border-[#575757]">
-              <ListFilter className="size-5 text-[#082A44] dark:text-[#B2B2B2]" />
-              <h1 className="text-sm text-[#082A44] dark:text-[#B2B2B2] font-semibold">
+                    border rounded-xl ${showFilter? "border-[#2461E6]  dark:border-[#73FBFD] bg-blue-100 dark:bg-gray-950": "border-[#EAECEF] bg-white dark:border-[#575757] dark:bg-[#575757]"}
+                    `}>
+              <ListFilter className={`size-5  ${showFilter?"text-[#2461E6] dark:text-[#73FBFD]" : "text-[#082A44] dark:text-[#B2B2B2]"} `} />
+              <h1 className={`text-sm  ${showFilter?"text-[#2461E6] dark:text-[#73FBFD]" : "text-[#082A44] dark:text-[#B2B2B2]"}  font-semibold`}>
                 Filter
               </h1>
-            </div>
+            </button>
+
+              
           </div>
         </div>
+        <AnimatePresence mode="wait">
+                        {showFilter && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                            className="w-full mt-5"
+                          >
+                            <ProjectFilter
+                              onClose={() => setShowFilter(false)}
+                              onApply={handleApplyFilters}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
 
-        <div className="flex flex-col xl:flex-row items-center px-5 justify-center gap-5 mt-5 py-4 rounded-xl  w-full border shadow-[0_0_10px_1px_rgba(0,0,0,0.25)]  border-[#E0DDDD] dark:bg-[#2E2F2F]  ">
-          <div className=" flex-1/2 flex flex-col sm:flex-row items-center justify-center gap-5 w-full ">
-            <div className="flex-3/8 w-full  flex flex-col gap-2 items-start justify-center ">
-              <h1 className="text-sm font-semibold text-[#000000] dark:text-[#F8F8F8] uppercase">
-                date range
-              </h1>
-              <div className="px-3 w-full py-2 bg-[#F9FAFB] dark:bg-[#000000] border border-[#EAECEF] dark:border-[#575757] rounded-2xl ">
-                <input
-                  type="date"
-                  className="date-input w-full pr-3 text-[#000000] dark:text-[#A2A2A2] bg-transparent outline-none border-none "
-                />
-              </div>
-            </div>
-            <div className="flex-5/8  w-full flex flex-col gap-2 items-start justify-center ">
-              <h1 className="text-sm font-semibold text-[#000000] dark:text-[#F8F8F8] uppercase">
-                team/member
-              </h1>
-              <div className="px-3 w-full py-2 flex items-center justify-between pr-5 bg-[#F9FAFB] dark:bg-[#000000] border dark:border-[#575757] border-[#EAECEF] rounded-2xl ">
-                <h1 className="text-[#000000] font-light text-sm dark:text-[#A2A2A2]">All Members</h1>
-                <ChevronDown className="size-5 text-[#082A44] dark:text-[#A2A2A2]" />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1/2 flex flex-col md:flex-row items-center justify-center w-full">
-            <div className="flex-4/17 w-full flex flex-col gap-2 items-start justify-center ">
-              <h1 className="text-sm font-semibold  text-[#000000] dark:text-[#F8F8F8] uppercase w-full ">
-                priority
-              </h1>
-              <div className="flex items-center justify-center gap-x-4 gap-y-2  flex-wrap w-full ">
-                {priorityTab.map((item, idx) => (
-                  <div
-                    onClick={() => setSelectedPriorityTab(item)}
-                    key={idx}
-                    className={`flex  items-center justify-center px-5 py-3 font-semibold rounded-3xl border ${selectedPriorityTab === item
-                      ? "border-[#2457C5] bg-[#E2EBFF] dark:bg-[#002B2C] dark:border-[#73FBFD]  "
-                      : "border-[#E1E4E8] dark:border-[#000000] bg-[#FFFFFF] dark:bg-[#000000] cursor-pointer "
-                      }`}
-                  >
-                    <p
-                      className={`text-xs ${selectedPriorityTab === item
-                        ? "text-[#2457C5] dark:text-[#73FBFD]"
-                        : "text-[#002341] dark:text-[#A2A2A2]"
-                        } font-semibold`}
-                    >
-                      {item}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex-5/17  flex  items-center mt-3 md:mt-5 justify-center  md:justify-end w-full gap-4">
-              <div className="px-6 py-3 flex items-center bg-[#D9D9D9] dark:bg-[#000000] rounded-4xl justify-center ">
-                <p className="text-sm font-semibold text-[#010101] dark:text-[#F8F8F8] ">Reset</p>
-              </div>
-              <div className="px-10 py-2 flex items-center bg-[#2461E6] dark:bg-[#73FBFD] rounded-4xl justify-center ">
-                <p className="text-xs font-bold text-[#FFFFFF] dark:text-[#2E2F2F]">
-                  Apply Filters
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
       <div className="bg-[#FFFFFF] dark:bg-[#000000]  mt-5" >
         <div className="px-5 py-3  flex flex-wrap  items-center justify-center gap-x-14 gap-y-8 ">

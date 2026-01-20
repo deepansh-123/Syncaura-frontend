@@ -17,6 +17,8 @@ export default function ComplaintsList({
   });
 };
 
+
+
   return (
     <>
       <div className="hidden md:flex flex-col gap-2 h-[calc(100vh-180px)]">
@@ -99,11 +101,12 @@ export default function ComplaintsList({
       <div
         className="flex md:hidden flex-col gap-4 px-2 sm:px-5
         max-h-[calc(100vh-120px)] overflow-y-auto
-        no-scrollbar"
+        no-scrollbar pb-25 pt-5 sm:py-0"
       >
         {COMPLAINTS.map(({ id, subject, category, status, date }, idx) => (
           <div
             key={COMPLAINTS.length + idx}
+              onClick={() => setActiveId(id)}
             className="flex flex-col gap-5 px-5 py-5 shadow-[0_2px_6px_rgba(0,0,0,4)]
               dark:shadow-[0_2px_6px_rgba(0,0,0,3)]
               hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)]

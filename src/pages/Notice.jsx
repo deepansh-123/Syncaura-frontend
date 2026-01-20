@@ -1,19 +1,82 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleThemeMethod } from "../redux/slices/themeSlice";
-import { Filter, Funnel, Plus, Search } from "lucide-react";
+import  { useEffect, useState, useMemo } from "react";
+import {  useSelector } from "react-redux";
+import {  Funnel, Plus, Search } from "lucide-react";
 import RecentActivity from "../components/notice/RecentActivity";
 import NotificationRow from "../components/notice/NotificationRow";
 import { notificationsList } from "../constant/constant";
 import NewNoticeModal from "../components/notice/NewNoticeModel";
+import { AnimatePresence, motion } from "framer-motion";
+import NoticeFilter from "../components/notice/NoticeFilter";
 
 const Notice = () => {
   const isdark = useSelector((state) => state.theme.isDark);
   const [showModel, setShowModal] = useState(false);
-  const toggleTheme = () => {
-    useDispatch(toggleThemeMethod());
+  const [search, setSearch] = useState("");
+  const [debouncedValue, setDebouncedValue] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState(null);
+  const [noticeData, setNoticeData] = useState(notificationsList);
+
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedValue(search.toLowerCase()),
+      500,
+    );
+    return () => clearTimeout(timer);
+  }, [search]);
+  const [fewNotification, setFewNotification] = useState(
+    notificationsList.slice(0, 7),
+  );
+
+
+const filteredNotice = useMemo(() => {
+  let result = [...noticeData];
+
+  if (debouncedValue) {
+    result = result.filter(
+      (item) =>
+        item.title.toLowerCase().includes(debouncedValue) ||
+        item.type.toLowerCase().includes(debouncedValue) ||
+        item.category.toLowerCase().includes(debouncedValue)
+    );
+  }
+
+  if (appliedFilters) {
+    if (appliedFilters.type) {
+      result = result.filter(
+        (item) =>
+          item.category.toLowerCase() === appliedFilters.type.toLowerCase()
+      );
+    }
+
+    if (appliedFilters.status) {
+      result = result.filter(
+        (item) => item.status === appliedFilters.status
+      );
+    }
+
+    if (appliedFilters.date) {
+      const selectedDate = new Date(appliedFilters.date);
+      result = result.filter(
+        (item) => new Date(item.date) >= selectedDate
+      );
+    }
+  }
+
+  return result;
+}, [noticeData, debouncedValue, appliedFilters]);
+
+
+useEffect(() => {
+  setFewNotification(filteredNotice.slice(0, 7));
+}, [filteredNotice]);
+
+
+  const handleApplyFilters = (newFilters) => {
+    
+    setAppliedFilters(newFilters);
   };
-  const [fewNotification, setFewNotification]=useState(notificationsList.slice(0, 7))
   return (
     <div className="relative w-full transition-colors duration-500  border-t dark:border-[#000000] h-full bg-[#FFFFFF] dark:bg-black pt-6 pb-24 overflow-y-auto">
       <div className="flex flex-col sm:flex-row items-center justify-center mb-8 border-b border-[#E0DDDD] dark:border-[#575757] pt-3 px-5 pb-2 w-full gap-y-2  ">
@@ -23,14 +86,34 @@ const Notice = () => {
           Notice Board Management
         </h1>
         <div className="flex-1/3 flex items-center justify-center sm:justify-end  gap-2 ">
-          <div className="flex-1/4 flex items-center justify-center w-full px-5 py-1 gap-2 border rounded-4xl border-[#989696] dark:border-[#FFFFFF] ">
-            <Funnel className="size-5 text-[#575757] dark:text-[#FFFFFF]    " />
-            <span className="text-lg text-[#575757] dark:text-[#FFFFFF]">Filter</span>
-          </div>
+          <button onClick={()=>setShowFilter((prev)=>!prev)} className={`flex-1/4 flex items-center justify-center w-full px-5 py-1 gap-2 border rounded-4xl  ${showFilter? "border-[#2461E6]  dark:border-[#73FBFD]": "border-[#989696] dark:border-[#FFFFFF]"} `}>
+            <Funnel className={`size-5 ${showFilter ? "text-[#2461E6] dark:text-[#73FBFD]" : "text-[#082A44] dark:text-[#B2B2B2]"} `} />
+            <span className={`text-lg ${showFilter ?"text-[#2461E6] dark:text-[#73FBFD]" : "text-[#575757] dark:text-[#FFFFFF]"}`}>
+              Filter
+            </span>
+          </button>
+           <AnimatePresence mode="wait">
+            {showFilter && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="w-full absolute left-0 top-30 md:top-20 z-100"
+              >
+                <NoticeFilter
+                  onClose={() => setShowFilter(false)}
+                  onApply={handleApplyFilters}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="flex-3/4 flex col-span-5 items-center  w-full gap-x-2 bg-[#EDEDED] dark:bg-[#2E2F2F] px-4 rounded-3xl py-2">
             <Search className="size-5 text-gray-500" />
             <input
+              onChange={(e) => setSearch(e.target.value)}
               type="text"
+              value={search}
               placeholder="Search"
               className="flex-1 outline-none text-[#A19C9C]  dark:text-[#acabab] text-sm  placeholder:text-sm  placeholder:text-[#A19C9C] dark:placeholder:text-[#acabab]"
             />
@@ -58,26 +141,35 @@ const Notice = () => {
                   idx % 3 === 0
                     ? "bg-red-50"
                     : idx % 3 === 1
-                    ? "bg-purple-50"
-                    : "bg-blue-50"
+                      ? "bg-purple-50"
+                      : "bg-blue-50"
                 }
                 docColor={
                   idx % 3 === 0
                     ? "text-red-500"
                     : idx % 3 === 1
-                    ? "text-purple-500"
-                    : "text-blue-500"
+                      ? "text-purple-500"
+                      : "text-blue-500"
                 }
               />
             ))}
-            {fewNotification.length!== notificationsList.length && (
-              <div className="w-full flex items-center justify-center mt-4" >
-              <button onClick={()=>{
-                setFewNotification((prev)=>[...prev, ...notificationsList.slice(fewNotification.length, fewNotification.length+7)])
-              }} className="flex items-center justify-center text-[#C05328] text-xl hover:underline" >
-                View All Notifications
-              </button>
-            </div>
+            {fewNotification.length !== filteredNotice.length && (
+              <div className="w-full flex items-center justify-center mt-4">
+                <button
+                  onClick={() => {
+                    setFewNotification((prev) => [
+                      ...prev,
+                      ...filteredNotice.slice(
+                        prev.length,
+                        prev.length + 7,
+                      ),
+                    ]);
+                  }}
+                  className="flex items-center justify-center text-[#C05328] text-xl hover:underline"
+                >
+                  View All Notifications
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -91,7 +183,12 @@ const Notice = () => {
         <Plus size={18} />
         New Notice
       </button>
-      {showModel && <NewNoticeModal onClose={()=>setShowModal(false)} addNotice={setFewNotification} />}
+      {showModel && (
+        <NewNoticeModal
+          onClose={() => setShowModal(false)}
+          addNotice={setNoticeData}
+        />
+      )}
     </div>
   );
 };

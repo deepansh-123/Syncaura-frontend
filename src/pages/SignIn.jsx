@@ -1,219 +1,204 @@
-import { useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Loader, Mail } from "lucide-react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import EmptyShadowCircle from '../components/auth/EmptyShadowCircle';
-import { useDispatch, useSelector } from 'react-redux';
-import {toggleThemeMethod} from "../redux/slices/themeSlice"
+import SocialAuthButton from "../components/auth/SocialAuthButton";
+import { motion } from "framer-motion";
+import PasswordField from "../components/auth/PasswordField";
+import { Link } from "react-router-dom";
+import AnimatedInput from "../components/auth/AnimatedInput";
 
+const SignIn = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const [isSubmitting, setIsSubmitting]=useState(false)
+  
+  const wrapperRef = useRef(null);
+  const passRef = useRef(null);
+  const socialProviders = [
+    {
+      id: "google",
+      icon: "/images/Auth/google.png",
+      alt: "Google login",
+      onClick: () => console.log("Google Login"),
+    },
+    {
+      id: "github",
+      icon: "/images/Auth/github.png",
+      alt: "GitHub login",
+      onClick: () => console.log("GitHub Login"),
+    },
+    {
+      id: "facebook",
+      icon: "/images/Auth/facebook.png",
+      alt: "Facebook login",
+      onClick: () => console.log("Facebook Login"),
+    },
+  ];
 
-
-
-
-export default function SignIn() {
-  const isDark=useSelector((state)=>state.theme.isDark)
-  // const { isDark, toggleTheme } = useThemeStore()
-  const dispatch= useDispatch()
-  const toggleTheme=()=>{
-   dispatch(toggleThemeMethod())
-  }
-  const { register, handleSubmit, formState: { errors } } = useForm();
-
-  const onSubmit = (data) => {
-    console.log("Login:", data);
-    
-
+  const handleFocus = (ref) => {
+    ref.current?.classList.add(
+      "border-[#01509C]",
+      "ring-2",
+      "ring-[#01509C]/30"
+    );
   };
-  const onError=(errors)=>{
-    if (errors.email) console.log("Email Error:", errors.email.message);
-    if (errors.password) console.log("Password Error:", errors.password.message);
-  }
+  const handleBlur = (ref) => {
+    ref.current?.classList.remove(
+      "border-[#01509C]",
+      "ring-2",
+      "ring-[#01509C]/30"
+    );
+  };
+  const onSubmit = (data) => {
+   setIsSubmitting(true);
+   setTimeout(()=>{
+     console.log(data);
+     setIsSubmitting(false)
+   }, [1000])
+  };
+  const onError = (error) => {
+    console.log(error);
+  };
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div
+      class="bg-[radial-gradient(ellipse_60%_70%_at_center,#4a9df0_0%,#01509C_65%,#013b73_100%)]
+ w-full min-h-screen flex items-center justify-center overflow-hidden  "
+    >
+      <motion.div
+      className="relative flex items-center justify-center w-[90%] md:w-[80%] lg:w-3/4 2xl:w-1/2"
+      
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25, duration: 1 }}
 
-      <div className={`absolute inset-0 bg-no-repeat bg-top bg-cover bg-[url("/background/signin-light.png")]
-      transition-opacity duration-700 ${isDark ? 'opacity-0' : 'opacity-100'}`}
-      />
+  
+    >
+        <div
+          className="absolute -bottom-5 -right-6 md:-bottom-11 md:-right-11 z-20 size-20 md:size-25 rounded-full bg-linear-to-bl 
+ from-[#868686] to-[#ECECEC]"
+        />
+        <div
+          className="absolute -top-5 -left-6 md:-top-11 md:-left-11 z-20 size-20 md:size-25 rounded-full bg-linear-to-bl 
+ from-[#0050FF] to-[#0040CC]"
+        />
+        <div className="rounded-4xl lg:rounded-r-none z-80 py-5 xl:py-15 px-10 xl:px-20 pr-5 xl:pr-15  w-full bg-[#ECECEC] flex flex-col items-center justify-center">
+          <h1 className="text-[#000000] text-2xl font-bold">Welcome Back</h1>
+          <form
+            onSubmit={handleSubmit(onSubmit, onError)}
+            className="space-y-4 w-full mt-10"
+          >
+            <div className="relative flex flex-col items-start justify-center gap-1.5 ">
+              <label className="text-[#000000] text-base font-medium">
+                Email Address
+              </label>
+              <div className="flex flex-col items-start justify-center w-full gap-1 ">
+                <AnimatedInput
+  type="email"
+  placeholder="Email"
+  iconType="mail"
+  register={register}
+  wrapperRef={wrapperRef}
+  handleFocus={handleFocus}
+  handleBlur={handleBlur}
+/>
 
-      <div className={`absolute inset-0 bg-slate-950
-      transition-opacity duration-700 ${isDark ? 'opacity-100' : 'opacity-0'}`}
-      />
+              </div>
+            </div>
 
-
-
-      {isDark && (
-        <>
-          {/* <div className="absolute -top-[40rem] -left-80"> */}
-          <div className="absolute -top-80 -left-72">
-            <EmptyShadowCircle sizeClass="h-[400px] w-[800px] " borderClass="border-2" />
-          </div>
-
-
-          <div className="absolute -bottom-5/8 -right-96">
-            <EmptyShadowCircle sizeClass="h-[800px] w-[800px] " borderClass="border-2" />
-          </div>
-
-        </>
-      )}
-
-      <button
-        onClick={() => toggleTheme()}
-        className="absolute top-8 right-8 p-3 rounded-full bg-white/90 hover:bg-white transition-all z-50 shadow-lg"
-      >
-        {isDark ? (
-          <Sun className="w-6 h-6 text-yellow-500" />
-        ) : (
-          <Moon className="w-6 h-6 text-slate-700" />
-        )}
-      </button>
-
-      <div className="relative w-2/3 xl:w-2/5 h-[600px] transition-all duration-700">
-
-        {isDark ? (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div className="absolute inset-0 rounded-4xl bg-linear-to-br from-blue-500/30 via-cyan-500/20 to-blue-600/30 blur-3xl animate-pulse"></div>
-
-            <div className="absolute inset-0 rounded-[80px] p-[3px] bg-linear-to-br from-blue-400 via-cyan-400 to-blue-500 shadow-[0_0_80px_rgba(59,130,246,0.8)] ">
-
-              <div className="w-full h-full rounded-[78px] bg-slate-950/95 backdrop-blur-xl flex items-center justify-center">
-                <div className="text-center px-16">
-                  <h1 className=" text-5xl xl:text-8xl h1-anta tracking-tight font-bold mb-6  text-white"
-                  >
-                    FLOWBIT
-                  </h1>
-
-                  <p className='text-white text-xl xl:text-4xl'>Let Your <span className='text-blue-600'> Work</span> Flow <span className='text-blue-600'>smater</span></p>
-
-                  <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-3 w-full mt-10">
-                    <input
-                      type="text"
-                      placeholder="Email / User ID"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Please enter a valid email"
-                        }
-                      })}
-                      className="w-full px-5 py-3 rounded-full bg-white/95 text-gray-800 placeholder-gray-400
-                                 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-center
-                                 shadow-lg border-2 border-black/30"
-                    />
-
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      {...register("password", { required: "Password is required" })}
-                      className="w-full px-5 py-3 rounded-full bg-white/95 text-gray-800 placeholder-gray-400
-                                 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-center
-                                 shadow-lg border-2 border-black/30"
-                    />
-
-                    <div className="flex items-center justify-center">
-                      <button
-                     
-                      
-                        type='submit'
-                        className="w-48 mt-5 block py-2.5 rounded-full bg-blue-600 text-white font-bold text-base
-                                 hover:bg-blue-500 transition-all shadow-[0_0_20px_rgba(59,130,246,0.5)]
-                                 hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] hover:scale-105 active:scale-95"
-                      >
-                        LOGIN
-                      </button>
-                    </div>
-                  </form>
-
-                  <div className="flex justify-center items-center gap-6 mt-6 text-sm">
-                    <button
-                      className="text-white hover:text-blue-400 transition-colors font-medium"
-                      style={{
-                        WebkitTextStroke: '0.5px rgba(255,50,50,0.8)',
-                        textShadow: '0 0 8px rgba(255,50,50,0.3)'
-                      }}>
-                      Forgot Password?
-                    </button>
-                    <span className="text-white text-xl">|</span>
-                    <Link to={"/sign-up"}
-                      className="text-white hover:text-blue-400 transition-colors font-medium"
-                      style={{
-                        WebkitTextStroke: '0.5px rgba(0,0,0,0.8)',
-                        textShadow: '0 0 6px rgba(0,0,0,0.2)'
-                      }}>
-                      Create Account
-                    </Link>
-                  </div>
+            <div className="relative flex flex-col items-start justify-center w-full gap-1.5 ">
+              <label className="text-[#000000] text-base font-medium">
+                Password
+              </label>
+              <div className="flex flex-col items-start justify-center w-full gap-1 ">
+                <PasswordField
+                  register={register}
+                  handleFocus={handleFocus}
+                  handleBlur={handleBlur}
+                  passRef={passRef}
+                />
+                <div className="flex items-center justify-end w-full ">
+                  <p className="text-sm text-blue-500 hover:underline transition-all duration-500 cursor-pointer font-semibold">
+                    Forgot Password?
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-8xl  h1-anta font-bold mb-6 tracking-tight text-stroke-white-fill">
-                FLOWBIT
+            <motion.div
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0px 12px 25px rgba(0,0,0,0.25)",
+              }}
+              whileTap={{
+                scale: 0.95,
+                boxShadow: "0px 6px 15px rgba(0,0,0,0.2)",
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              }}
+              className="relative flex items-start justify-center w-full rounded-md bg-[#2457C5] py-2 px-3"
+            >
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ y: -1 }}
+                whileTap={{ y: 1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+                className="text-[#F8F8F8] font-bold text-lg"
+              >
+               {isSubmitting ? <Loader className="size-5 text-white animate-spin" /> : " Sign In"}
+              </motion.button>
+            </motion.div>
+            <div className="flex relative items-center justify-center w-full top-2 ">
+              <span className="h-0.5 bg-black  w-full" />
+              <h1 className="absolute -top-2.5  bg-[#ECECEC] px-2 text-black text-sm font-bold flex-1/3">
+                Or continue with
               </h1>
-
-
-              <p className='text-white text-4xl font-bold'>Let Your <span className='text-blue-600'> Work</span> Flow <span className='text-blue-600'>smater</span></p>
-              <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-3 w-full mt-10">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Email / User ID"
-                    {...register("email", {
-                      required: "Email is required",
-                      pattern: {
-                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: "Please enter a valid email"
-                      }
-                    })}
-                    className="w-full px-5 py-3 rounded-full bg-white/90 text-gray-700 placeholder-gray-400
-                               focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-center
-                               shadow-lg border-2 border-black/50"
-                  />
-                </div>
-
-                <div className="relative">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password", { required: "Password is required" })}
-                    className="w-full px-5 py-3 rounded-full bg-white/90 text-gray-700 placeholder-gray-400
-                               focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-center
-                               shadow-lg border-2 border-black/50"
-                  />
-                </div>
-
-                <button
-                  type='submit'
-                  className="w-48 mx-auto block py-2.5 rounded-full bg-blue-600 text-white font-bold text-base
-                             hover:bg-blue-500 transition-all hover:scale-105 active:scale-95"
-
-                >
-                  LOGIN
-                </button>
-              </form>
-
-              <div className="flex justify-center items-center gap-6 mt-6 text-sm">
-                <button className="text-stroke-red text-sm hover:text-orange-600 transition-colors font-medium">
-                  Forgot Password?
-                </button>
-
-                <span className="text-black text-xl font-light">|</span>
-                <Link
-                  to="/sign-up"
-                  className="text-stroke-green text-sm text-white hover:text-gray-700 transition-colors font-bold"
-
-                >
-                  Create Account
-                </Link>
-
-              </div>
             </div>
+            <div className="flex items-center justify-center w-full gap-4 mt-8 ">
+              {socialProviders.map((provider) => (
+                <SocialAuthButton
+                  key={provider.id}
+                  icon={provider.icon}
+                  alt={provider.alt}
+                  onClick={provider.onClick}
+                />
+              ))}
+            </div>
+            <div className="flex items-center justify-center w-full gap-1 ">
+              <span className="text-[#000000] text-base font-semibold">
+                Don’t have an account?{" "}
+              </span>
+              <Link
+                to={"/sign-up"}
+                className="flex items-center justify-center"
+              >
+                <span className="text-blue-500 hover:underline text-xl font-semibold">
+                  {" "}
+                  Sign Up
+                </span>
+              </Link>
+            </div>
+          </form>
+        </div>
+        <div className=" rounded-r-4xl relative z-100  w-full px-7 py-23.5 bg-[#2461E6] hidden lg:flex flex-col items-center justify-center">
+          <div className="bg-[#FFFFFF21] border border-[#7B9CE282] h-75 xl:h-95 w-2/3 rounded-4xl" />
+          <div className="absolute z-60 -left-20 xl:-top-5 -top-7">
+            <img
+              src="/images/Auth/loginHuman.png"
+              alt=""
+              className="object-fill scale-100"
+            />
           </div>
-        )}
-      </div>
+        </div>
+      </motion.div>
     </div>
-
   );
-}
+};
+
+export default SignIn;

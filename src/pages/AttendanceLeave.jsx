@@ -7,23 +7,26 @@ import {
   XCircleIcon,
 } from "lucide-react";
 import AttendanceCard from "../components/AttendanceLeave/AttendanceCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AttendanceList from "../components/AttendanceLeave/AttendanceList";
 import { motion, AnimatePresence } from "framer-motion";
 import { leaveHistory } from "../constant/constant";
 import LeaveModel from "../components/AttendanceLeave/LeaveModel";
+import AttendanceLeaveFilter from "../components/AttendanceLeave/AttendanceLeaveFilter";
 
 const AttendanceLeave = () => {
   const [selectedId, setSelectedId] = useState(0);
   const [openModel, setOpenModel] = useState(false);
-  const [filterLeaveHistory, setFilterLeaveHistory] = useState(leaveHistory);
+  const [leaveData, setLeaveData] = useState(leaveHistory);
+
   const [showPopup, setShowPopup] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Check-In");
   const popupRef = useRef(null);
   const triggerRef = useRef(null);
-  const [search, setSearch]=useState("");
+  const [search, setSearch] = useState("");
   const [debouncedValue, setDebouncedValue] = useState("");
-  
+  const [showFilter, setShowFilter] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
   const attendanceData = [
     {
@@ -50,23 +53,47 @@ const AttendanceLeave = () => {
     },
   ];
 
-  useEffect(()=>{
-    const timer=setTimeout(()=>setDebouncedValue(search.toLowerCase()), 500);
-    return ()=> clearTimeout(timer);
-  }, [search])
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedValue(search.toLowerCase()),
+      500,
+    );
+    return () => clearTimeout(timer);
+  }, [search]);
 
-  useEffect(()=>{
-    if(!debouncedValue){
-      setFilterLeaveHistory(leaveHistory)
-      return 
+  const filteredLeaveHistory = useMemo(() => {
+    let result = [...leaveData];
+
+    if (debouncedValue) {
+      result = result.filter(
+        (item) =>
+          item.reason.toLowerCase().includes(debouncedValue) ||
+          item.status.toLowerCase().includes(debouncedValue),
+      );
     }
-    const searchLeaveHistory=leaveHistory.filter((item, idx)=>(
-      item.status.toLowerCase().includes(debouncedValue) || 
-      item.reason.toLowerCase().includes(debouncedValue) ||
-      item.type.toLowerCase().includes(debouncedValue)
-    ));
-    setFilterLeaveHistory(searchLeaveHistory)
-  }, [debouncedValue])
+
+    if (appliedFilters) {
+      if (appliedFilters.status) {
+        result = result.filter((item) => item.status === appliedFilters.status);
+      }
+
+      if (appliedFilters.type) {
+        result = result.filter((item) => item.type === appliedFilters.type);
+      }
+
+      if (appliedFilters.date) {
+        const selectedDate = new Date(appliedFilters.date);
+
+        result = result.filter((item) => {
+          const start = new Date(item.startDate);
+          const end = new Date(item.endDate);
+          return selectedDate >= start && selectedDate <= end;
+        });
+      }
+    }
+
+    return result;
+  }, [leaveData, debouncedValue, appliedFilters]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -89,6 +116,10 @@ const AttendanceLeave = () => {
     };
   }, [showPopup]);
 
+  const handleApplyFilters = (newFilters) => {
+    setAppliedFilters(newFilters);
+  };
+
   return (
     <div className="relative w-full min-h-[calc(92vh)] flex flex-col bg-[#FFFFFF] dark:bg-[#000000]">
       <div className="flex flex-col sm:flex-row gap-y-3 items-center justify-between px-5 py-5 border-b border-[#EDEDED]">
@@ -96,22 +127,43 @@ const AttendanceLeave = () => {
           Attendance And Leave Management
         </h1>
         <div className="flex w-full flex-3/5 md:flex-2/5 2xl:flex-1/5 items-center justify-center gap-2 ">
-          <div
-            className="px-4 py-2 bg-white dark:bg-[#000000]
+          <button
+            onClick={() => setShowFilter((prev) => !prev)}
+            className={`px-4 py-2 bg-white dark:bg-[#000000]
                     flex items-center gap-2
-                    border rounded-4xl
-                    border-[#989696] dark:border-[#989696]"
+                    border rounded-4xl ${showFilter ? "border-[#2461E6]  dark:border-[#73FBFD] " : " border-[#989696] dark:border-[#989696]"}
+                    `}
           >
-            <Funnel className="size-5 text-[#082A44] dark:text-[#B2B2B2]" />
-            <h1 className="text-base text-[#575757] dark:text-[#8f8e8e] font-semibold">
+            <Funnel
+              className={`size-5 ${showFilter ? "text-[#2461E6] dark:text-[#73FBFD]" : "text-[#082A44] dark:text-[#B2B2B2]"} `}
+            />
+            <h1
+              className={`text-base ${showFilter ? "text-[#2461E6] dark:text-[#73FBFD]" : "text-[#575757] dark:text-[#8f8e8e]"}  font-semibold`}
+            >
               Filter
             </h1>
-          </div>
+          </button>
+          <AnimatePresence mode="wait">
+            {showFilter && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="w-full absolute left-0 top-30 md:top-20 z-100"
+              >
+                <AttendanceLeaveFilter
+                  onClose={() => setShowFilter(false)}
+                  onApply={handleApplyFilters}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="flex w-full items-center gap-2 bg-[#EDEDED] dark:bg-[#2E2F2F]  px-3 py-2 rounded-4xl">
             <Search className="size-6 text-gray-500 dark:text-[#A19C9C]" />
             <input
-            onChange={(e)=> setSearch(e.target.value)}
-            value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
               placeholder="Search"
               className="bg-transparent  dark:text-[#A19C9C] dark:placeholder:text-[#A19C9C] text-[#5C5C5C] placeholder:text-[#5C5C5C] outline-none text-sm w-full"
             />
@@ -264,7 +316,7 @@ const AttendanceLeave = () => {
         </div>
 
         <AttendanceList
-          LeaveData={filterLeaveHistory}
+          LeaveData={filteredLeaveHistory}
           currId={selectedId}
           setCurrId={setSelectedId}
         />
@@ -276,7 +328,7 @@ const AttendanceLeave = () => {
         <AttendanceList
           currId={selectedId}
           setCurrId={setSelectedId}
-          LeaveData={filterLeaveHistory}
+          LeaveData={filteredLeaveHistory}
         />
       </div>
 
@@ -290,7 +342,7 @@ const AttendanceLeave = () => {
       {openModel && (
         <LeaveModel
           onClose={() => setOpenModel(false)}
-          setHistory={setFilterLeaveHistory}
+          setLeaveData={setLeaveData}
         />
       )}
     </div>

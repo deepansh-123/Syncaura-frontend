@@ -589,58 +589,137 @@ export const COMPLAINTS = [
     category: "Network",
     date: "2024-11-18T09:32:15.421Z",
     status: "Open",
+    description:
+      "The WiFi connectivity in the central library has been consistently slow for the past several weeks. Students and staff are facing frequent disconnections, extremely low download speeds, and long loading times when accessing academic portals, research databases, and internal university systems. This issue becomes particularly severe during peak hours when the library is crowded, making it difficult to complete online assignments, attend virtual lectures, or conduct research efficiently. Multiple attempts to reconnect to the network result in authentication failures or timeouts. The issue affects all floors of the library and is not limited to a specific seating area. Several students have reported that mobile hotspots work better than the institutional WiFi, which defeats the purpose of having a dedicated campus network. This problem is impacting productivity and academic performance, especially during examination periods. A detailed network audit and router inspection is required to identify bandwidth bottlenecks, outdated hardware, or configuration issues.",
+    attachments: [
+      {
+        name: "wifi_speed_test.png",
+        url: "https://example.com/uploads/wifi_speed_test.png",
+      },
+      {
+        name: "library_router_photo.jpg",
+        url: "https://example.com/uploads/library_router_photo.jpg",
+      },
+    ],
   },
+
   {
     id: "#1019",
     subject: "Cannot access portal",
     category: "Login",
     date: "2024-11-16T14:10:42.109Z",
     status: "In Progress",
+    description:
+      "Several users are unable to access the student and staff portal despite entering correct login credentials. The system either displays an invalid session error or continuously redirects back to the login screen. This issue started appearing after a recent system update and affects both desktop and mobile users across different browsers. Password reset attempts are unsuccessful and users do not receive reset emails in some cases. This has caused delays in accessing attendance records, internal announcements, fee payment systems, and course materials. Faculty members are also affected and cannot upload grades or update coursework. The problem appears to be related to session handling or authentication token expiration. A review of server logs and authentication middleware is required to restore seamless access. Temporary workarounds such as clearing cache are inconsistent and unreliable.",
+    attachments: [
+      {
+        name: "portal_error_screenshot.png",
+        url: "https://example.com/uploads/portal_error_screenshot.png",
+      },
+    ],
   },
+
   {
     id: "#1011",
     subject: "ID Card malfunction",
     category: "Access",
     date: "2024-11-12T08:55:03.887Z",
     status: "Resolved",
+    description:
+      "The issued ID card was not functioning correctly at multiple access points including entry gates, library scanners, and attendance systems. Despite being physically intact, the card frequently failed to register during scans, causing inconvenience and delays. Security staff had to manually verify identity, leading to long queues during peak hours. The issue was intermittent, making it difficult to reproduce consistently. After technical inspection, it was identified that the card’s embedded chip had degraded and required replacement. The card was reissued and tested across all access systems. Since replacement, the issue has been fully resolved and the card is functioning as expected.",
+    attachments: [
+      {
+        name: "old_id_card_photo.jpg",
+        url: "https://example.com/uploads/old_id_card_photo.jpg",
+      },
+      {
+        name: "replacement_confirmation.pdf",
+        url: "https://example.com/uploads/replacement_confirmation.pdf",
+      },
+    ],
   },
+
   {
     id: "#1005",
     subject: "AC Leaking in Room 302",
     category: "Facilities",
     date: "2024-11-01T11:27:59.300Z",
     status: "Resolved",
+    description:
+      "Water leakage was observed from the air conditioning unit installed in Room 302. The leakage resulted in water dripping onto desks and electrical sockets, posing both safety and equipment damage risks. The issue was reported after multiple complaints from students attending lectures in the room. Maintenance inspection revealed a clogged drainage pipe and improper insulation around the AC unit. The drainage system was cleaned, insulation replaced, and the unit was tested for continuous operation. Post-repair checks confirmed no further leakage. Preventive maintenance has been scheduled to avoid recurrence.",
+    attachments: [
+      {
+        name: "ac_leak_photo.jpg",
+        url: "https://example.com/uploads/ac_leak_photo.jpg",
+      },
+    ],
   },
+
   {
     id: "#1042",
     subject: "Portal access attempt",
     category: "IT Security",
     date: "2024-10-21T06:45:18.640Z",
     status: "Open",
+    description:
+      "Multiple suspicious login attempts were detected on the institutional portal originating from unknown IP addresses. The attempts targeted several user accounts and triggered security alerts due to repeated failures. While no data breach has been confirmed, this incident raises concerns about brute force attacks or credential stuffing attempts. Immediate steps were taken to lock affected accounts and enforce password resets. A detailed security audit is required to analyze logs, identify the source of the attempts, and strengthen authentication measures such as rate limiting and multi-factor authentication.",
+    attachments: [
+      {
+        name: "security_log_extract.txt",
+        url: "https://example.com/uploads/security_log_extract.txt",
+      },
+    ],
   },
+
   {
     id: "#1016",
     subject: "CCTV not working",
     category: "Security",
     date: "2024-09-14T17:02:44.212Z",
     status: "Resolved",
+    description:
+      "One of the CCTV cameras installed near the main corridor was found to be non-functional. The camera feed was unavailable, creating a blind spot in a high-traffic area. After investigation, the issue was traced to a faulty power adapter. The adapter was replaced, camera firmware updated, and feed restored successfully. Monitoring has resumed and the issue has been marked resolved.",
+    attachments: [
+      {
+        name: "cctv_camera_photo.jpg",
+        url: "https://example.com/uploads/cctv_camera_photo.jpg",
+      },
+    ],
   },
+
   {
     id: "#1057",
     subject: "Power voltage",
     category: "Electrical",
     date: "2024-11-03T12:19:09.531Z",
     status: "In Progress",
+    description:
+      "Irregular voltage fluctuations have been reported in multiple classrooms and labs. These fluctuations are causing frequent shutdowns of computers, projectors, and sensitive lab equipment. The issue appears sporadic but has increased in frequency over the past month. Electrical inspections suggest instability in the main supply line or transformer. Temporary stabilizers have been deployed, but a permanent solution is required to prevent equipment damage and ensure safety.",
+    attachments: [
+      {
+        name: "voltage_readings.csv",
+        url: "https://example.com/uploads/voltage_readings.csv",
+      },
+    ],
   },
+
   {
     id: "#1009",
     subject: "Fire alarm issue",
     category: "Safety",
     date: "2024-08-27T04:36:51.998Z",
     status: "Resolved",
+    description:
+      "The fire alarm system was triggering false alerts during non-emergency situations, causing panic and unnecessary evacuations. A thorough inspection revealed a faulty smoke sensor that was overly sensitive to dust. The sensor was replaced and recalibrated. Multiple test drills were conducted to confirm normal operation. The fire safety system is now functioning correctly.",
+    attachments: [
+      {
+        name: "fire_alarm_test_report.pdf",
+        url: "https://example.com/uploads/fire_alarm_test_report.pdf",
+      },
+    ],
   },
-  
 ];
+
 
 
 export const PROJECTS = [
@@ -856,6 +935,7 @@ export const notificationsList = [
     title: "New Member recruited in the Team",
     date: "2023-05-07T00:00:00.000Z",
     type: "info",
+    status: "Yes",
   },
   {
     id: 2,
@@ -863,6 +943,7 @@ export const notificationsList = [
     title: "Final Exam Schedule Update",
     date: "2023-12-13T00:00:00.000Z",
     type: "academic",
+    status: "No",
   },
   {
     id: 3,
@@ -870,6 +951,7 @@ export const notificationsList = [
     title: "Holiday Announcement: Winter Break",
     date: "2023-12-10T00:00:00.000Z",
     type: "info",
+    status: "Yes",
   },
   {
     id: 4,
@@ -877,6 +959,7 @@ export const notificationsList = [
     title: "System Maintenance Scheduled",
     date: "2023-12-08T00:00:00.000Z",
     type: "system",
+    status: "No",
   },
   {
     id: 5,
@@ -884,6 +967,7 @@ export const notificationsList = [
     title: "Library Hours Extension",
     date: "2023-12-05T00:00:00.000Z",
     type: "facility",
+    status: "Yes",
   },
   {
     id: 6,
@@ -891,6 +975,7 @@ export const notificationsList = [
     title: "Project Completion Notice",
     date: "2023-12-11T00:00:00.000Z",
     type: "system",
+    status: "Yes",
   },
   {
     id: 7,
@@ -898,6 +983,7 @@ export const notificationsList = [
     title: "New Brand Opening",
     date: "2023-02-06T00:00:00.000Z",
     type: "info",
+    status: "No",
   },
   {
     id: 8,
@@ -905,6 +991,7 @@ export const notificationsList = [
     title: "Semester Registration Deadline Extended",
     date: "2024-01-05T00:00:00.000Z",
     type: "academic",
+    status: "Yes",
   },
   {
     id: 9,
@@ -912,6 +999,7 @@ export const notificationsList = [
     title: "Portal Downtime Resolved",
     date: "2024-01-12T00:00:00.000Z",
     type: "system",
+    status: "Yes",
   },
   {
     id: 10,
@@ -919,6 +1007,7 @@ export const notificationsList = [
     title: "New Parking Area Opened",
     date: "2024-01-18T00:00:00.000Z",
     type: "facility",
+    status: "No",
   },
   {
     id: 11,
@@ -926,6 +1015,7 @@ export const notificationsList = [
     title: "Annual Sports Meet Announcement",
     date: "2024-02-01T00:00:00.000Z",
     type: "info",
+    status: "Yes",
   },
   {
     id: 12,
@@ -933,8 +1023,10 @@ export const notificationsList = [
     title: "Results Published for Semester Exams",
     date: "2024-02-10T00:00:00.000Z",
     type: "academic",
+    status: "No",
   },
 ];
+
 
 export const reportsList = [
   {

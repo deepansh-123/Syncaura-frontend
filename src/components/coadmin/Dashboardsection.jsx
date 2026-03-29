@@ -68,25 +68,48 @@ export default function DashboardSection() {
 
   const alerts = [
     {
-      id: 1, bg: "bg-red-50 dark:bg-red-900/20", border: "border-red-100 dark:border-red-900/30", badgeBg: "bg-red-500",
-      badge: "HIGH SEVERITY", iconBg: "bg-red-100 dark:bg-red-900/50", iconBorder: "border-red-300 dark:border-red-800",
-      iconColor: "text-red-500 dark:text-red-400", icon: "!", divider: "border-red-100 dark:border-red-900/30",
+      id: 1, bg: "bg-[#fff1f1] dark:bg-red-900/10", border: "border-red-100 dark:border-red-900/20",
+      badgeBg: "bg-red-100 dark:bg-red-900/30 text-red-500", badge: "HIGH SEVERITY",
+      icon: (
+        <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+             <path d="M12 8v4" stroke="white" strokeWidth="3" strokeLinecap="round" />
+             <circle cx="12" cy="16" r="1.5" fill="white" />
+          </svg>
+        </div>
+      ),
       title: "API Dependency Failure",
       desc: "Payment gateway integration is failing due to 500 errors from provider. Blocking checkout flow.",
       team: "DevOps Team", time: "2 hours ago",
     },
     {
-      id: 2, bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-100 dark:border-amber-900/30", badgeBg: "bg-amber-400",
-      badge: "MEDIUM", iconBg: "bg-amber-100 dark:bg-amber-900/50", iconBorder: "border-amber-300 dark:border-amber-800",
-      iconColor: "text-amber-500 dark:text-amber-400", icon: "!", divider: "border-amber-100 dark:border-amber-900/30",
+      id: 2, bg: "bg-[#fffbeb] dark:bg-amber-900/10", border: "border-amber-100 dark:border-amber-900/20",
+      badgeBg: "bg-amber-100 dark:bg-amber-900/30 text-amber-500", badge: "MEDIUM",
+      icon: (
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+             <path d="M12 3L2 21h20L12 3z" fill="#f59e0b" />
+             <path d="M12 10v4" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+             <circle cx="12" cy="17" r="1.2" fill="white" />
+          </svg>
+        </div>
+      ),
       title: "QA Environment Latency",
       desc: "Staging environment is experiencing high latency, slowing down the QA review process significantly.",
       team: "Infra Team", time: "5 hours ago",
     },
     {
-      id: 3, bg: "bg-slate-50 dark:bg-[rgba(46,47,47,0.5)]", border: "border-slate-200 dark:border-slate-700", badgeBg: "bg-slate-400",
-      badge: "LOW", iconBg: "bg-slate-200 dark:bg-slate-700", iconBorder: "border-slate-300",
-      iconColor: "text-slate-500 dark:text-slate-400", icon: "?", divider: "border-slate-200 dark:border-slate-700",
+      id: 3, bg: "bg-[#f8fafc] dark:bg-slate-800/20", border: "border-slate-200 dark:border-slate-700",
+      badgeBg: "bg-slate-200 dark:bg-slate-700 text-slate-500", badge: "LOW",
+      icon: (
+        <div className="w-10 h-10 rounded-full bg-slate-400 flex items-center justify-center shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+             <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="2.5" />
+             <path d="M9 10c0-1.657 1.343-3 3-3s3 1.343 3 3c0 1.657-1.343 3-3 3v2" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+             <circle cx="12" cy="18" r="1.2" fill="white" />
+          </svg>
+        </div>
+      ),
       title: "Missing Assets for Sprint 25",
       desc: "Design assets for the upcoming sprint are incomplete in Figma.",
       team: "UX Team", time: "3 hours ago",
@@ -110,7 +133,7 @@ export default function DashboardSection() {
   ];
 
   return (
-    <div className="flex flex-col gap-4 font-sans pb-16">
+    <div className="flex flex-col gap-4 font-sans pb-16 px-0 sm:px-2">
       <style>{`
         * { scrollbar-width: none; -ms-overflow-style: none; }
         *::-webkit-scrollbar { display: none; }
@@ -137,7 +160,7 @@ export default function DashboardSection() {
       `}</style>
 
       {/* ── 5 Stat Cards ── */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
 
         {/* Total Tasks */}
         <div className="card-stagger bg-white dark:bg-[#1c1c1e] rounded-xl p-4 border border-slate-100 dark:border-slate-800 shadow-[0_6px_8px_-2px_rgba(0,0,0,0.18)] hover-lift cursor-default">
@@ -246,13 +269,13 @@ export default function DashboardSection() {
           <p className="font-bold text-slate-500 dark:text-slate-400">Sprint Status</p>
         </div>
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-bold text-slate-500 dark:text-slate-400 ml-8">Sprint Completion</span>
-          <span className="text-xl font-extrabold mr-10 text-slate-800 dark:text-white">62%</span>
+          <span className="text-sm font-bold text-slate-500 dark:text-slate-400 sm:ml-8">Sprint Completion</span>
+          <span className="text-xl font-extrabold sm:mr-10 text-slate-800 dark:text-white">62%</span>
         </div>
-        <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden" style={{ width: "calc(100% - 5rem)", marginLeft: "5rem" }}>
+        <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden sm:w-[calc(100%-5rem)] sm:ml-[5rem]">
           <div className="h-full w-[62%] bg-blue-500 rounded-full" />
         </div>
-        <div className="flex justify-between mt-2" style={{ width: "calc(100% - 5rem)", marginLeft: "5rem" }}>
+        <div className="flex justify-between mt-2 sm:w-[calc(100%-5rem)] sm:ml-[5rem]">
           <span className="text-[12px] text-slate-500 dark:text-slate-400">Day 8 of 14</span>
           <span className="text-[12px] text-slate-500 dark:text-slate-400">6 days remaining</span>
         </div>
@@ -262,8 +285,8 @@ export default function DashboardSection() {
       <div className="anim-fade-in-up bg-white dark:bg-[#1c1c1e] rounded-xl p-4 border border-slate-100 dark:border-slate-800 shadow-[0_6px_8px_-2px_rgba(0,0,0,0.18)]"
         style={{ animationDelay: "200ms" }}>
         <p className="font-bold text-slate-500 dark:text-slate-400 mb-4">Sprint Health (Planned vs Actual)</p>
-        <div className="flex items-center gap-8">
-          <div className="relative shrink-0" style={{ width: "200px", height: "200px" }}>
+        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <div className="relative shrink-0 w-[160px] h-[160px] md:w-[200px] md:h-[200px]">
             <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
               <circle cx="18" cy="18" r="13" fill="none" stroke="#e9e7e7" strokeWidth="4.5" />
               <circle cx="18" cy="18" r="13" fill="none" stroke="#3b82f6" strokeWidth="4.5"
@@ -276,7 +299,7 @@ export default function DashboardSection() {
               <span className="text-[9px] text-slate-400 text-center leading-tight">Adherence</span>
             </div>
           </div>
-          <div className="flex gap-10">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-10">
             {[
               { color: "bg-emerald-500", label: "Healthy", tip: "45 story points" },
               { color: "bg-blue-500", label: "Planned", tip: "67 story points" },
@@ -308,7 +331,7 @@ export default function DashboardSection() {
         <p className="text-[13px] text-slate-500 dark:text-slate-400 ml-3 mb-3">Sprint Completion</p>
 
         {progressRows.map((row) => (
-          <div key={row.name} className="ml-6 mr-4 mb-3">
+          <div key={row.name} className="sm:ml-6 ml-2 sm:mr-4 mr-2 mb-3">
             <div className="flex justify-between mb-1">
               <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{row.name}</span>
               <span className={`text-[11px] font-semibold ${row.labelCls}`}>{row.label}</span>
@@ -320,7 +343,7 @@ export default function DashboardSection() {
         {/* Expandable detail cards */}
         {viewDetailsOpen && (
           <div className="anim-fade-in mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {[
                 { name: "Sarah", tasks: 18, done: 18, color: "text-red-500" },
                 { name: "Mike", tasks: 20, done: 17, color: "text-emerald-500" },
@@ -361,22 +384,24 @@ export default function DashboardSection() {
             ))}
           </div>
         </div>
-        <div style={{ width: "calc(100% - 60px)", marginLeft: "60px", marginTop: "100px", paddingTop: "8px", paddingBottom: "0" }}>
-          <svg width="100%" viewBox="0 0 900 230" preserveAspectRatio="none" overflow="visible">
-            {[0, 97, 195].map((y, i) => (
-              <line key={`h-${i}`} x1={0} y1={y} x2={900} y2={y}
-                stroke="#c8d9e6" strokeWidth={1.4} strokeDasharray="7 6" />
-            ))}
-            {names.map((name, i) => {
-              const x = (i / (names.length - 1)) * 900;
-              return (
-                <text key={`label-${i}`} x={x} y={220} textAnchor="middle"
-                  fontSize={13} fill="#94a3b8" fontWeight={500} fontFamily="sans-serif">
-                  {name}
-                </text>
-              );
-            })}
-          </svg>
+        <div className="w-full">
+          <div className="mt-6 sm:mt-10 pt-8 pb-0">
+            <svg width="100%" viewBox="0 0 900 230" preserveAspectRatio="xMidYMid meet" className="w-full h-auto">
+              {[0, 97, 195].map((y, i) => (
+                <line key={`h-${i}`} x1={0} y1={y} x2={900} y2={y}
+                  stroke="#c8d9e6" strokeWidth={1.4} strokeDasharray="7 6" />
+              ))}
+              {names.map((name, i) => {
+                const x = (i / (names.length - 1)) * 900;
+                return (
+                  <text key={`label-${i}`} x={x} y={220} textAnchor="middle"
+                    fontSize={13} fill="#94a3b8" fontWeight={500} fontFamily="sans-serif">
+                    {name}
+                  </text>
+                );
+              })}
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -438,66 +463,58 @@ export default function DashboardSection() {
         className="anim-fade-in-up bg-white dark:bg-[#1c1c1e] rounded-xl border border-slate-100 dark:border-slate-800 shadow-[0_6px_8px_-2px_rgba(0,0,0,0.18)]"
         style={{ animationDelay: "400ms", minHeight: "155px", padding: "12px 16px", boxSizing: "border-box" }}
       >
-        <div className="flex justify-between items-center mb-2">
-          <span className="font-bold text-slate-500 dark:text-slate-400">Issues & Alerts</span>
-          <span className="text-[10px] bg-red-500 text-white rounded-full px-2 py-0.5 font-bold anim-pulse">
+        <div className="flex justify-between items-center mb-6">
+          <span className="text-3xl font-extrabold text-[#64748b] dark:text-slate-300">Issues & Alerts</span>
+          <span className="text-[12px] bg-red-50 text-red-400 rounded-full px-3 py-1 font-bold">
             {visibleAlerts.length} New
           </span>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto" style={{ minHeight: "90px" }}>
+        <div className="flex flex-col md:flex-row gap-3">
 
           {visibleAlerts.length === 0 && (
-            <div className="anim-fade-in flex items-center justify-center w-full">
+            <div className="anim-fade-in flex items-center justify-center w-full py-6">
               <p className="text-[12px] text-emerald-500 font-semibold">✓ All alerts dismissed</p>
             </div>
           )}
 
-          {visibleAlerts.map((a) => (
-            <div
-              key={a.id}
-              className={`flex-shrink-0 ${a.bg} border ${a.border} p-2.5 relative anim-slide-in hover-lift`}
-              style={{ width: "350px", height: "90px", boxSizing: "border-box" }}
-            >
-              {/* Dismiss ✕ */}
-              <button
-                onClick={() => setDismissedAlerts(d => [...d, a.id])}
-                className="absolute top-1.5 left-2 text-[9px] text-slate-300 hover:text-slate-600 dark:text-slate-300 cursor-pointer border-0 bg-transparent transition-colors btn-press"
-                title="Dismiss alert"
-              >✕</button>
-
-              <span className={`absolute top-2 right-2 text-[8px] ${a.badgeBg} text-white rounded-sm px-1.5 py-0.5 font-bold tracking-wide`}>
-                {a.badge}
-              </span>
-              <div className="flex gap-2 items-start" style={{ height: "55px" }}>
-                <div className={`w-7 h-7 rounded-full ${a.iconBg} border-2 ${a.iconBorder} flex items-center justify-center shrink-0 mt-0.5`}>
-                  <span className={`${a.iconColor} font-black text-xs leading-none`}>{a.icon}</span>
+          <div className="flex flex-col md:flex-row flex-1 gap-3">
+            {visibleAlerts.map((a) => (
+              <div
+                key={a.id}
+                className={`flex-1 min-w-[280px] ${a.bg} border-0 p-4 relative anim-slide-in rounded-2xl shadow-sm`}
+              >
+                <div className="flex gap-4 items-start mb-4">
+                  {a.icon}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start mb-1">
+                      <p className="text-[16px] font-extrabold text-slate-600 dark:text-white leading-tight">{a.title}</p>
+                      <span className={`text-[8px] ${a.badgeBg} rounded-full px-2 py-0.5 font-bold tracking-tight uppercase whitespace-nowrap`}>
+                        {a.badge}
+                      </span>
+                    </div>
+                    <p className="text-[12px] text-slate-400 dark:text-slate-400 leading-[1.5] line-clamp-2">{a.desc}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0 pr-12 pl-3">
-                  <p className="text-xs font-bold text-slate-800 dark:text-white leading-tight">{a.title}</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-[1.4]">{a.desc}</p>
+                <div className="flex items-center gap-4 text-[11px] text-slate-300 font-medium">
+                  <span>Assigned: <span className="text-slate-400">{a.team}</span></span>
+                  <span className="flex items-center gap-1">
+                    <div className="w-1 h-1 rounded-full bg-slate-300" />
+                    {a.time}
+                  </span>
                 </div>
               </div>
-              <div className={`flex items-center gap-3 pt-1.5 border-t ${a.divider}`}>
-                <span className="text-[10px] text-slate-400">Assigned: <span className="font-medium text-slate-500 dark:text-slate-400">{a.team}</span></span>
-                <span className="flex items-center gap-1 text-[10px] text-slate-400">
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9" stroke="#94a3b8" strokeWidth="2" />
-                    <path d="M12 7v5l3 3" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                  {a.time}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {/* View All Button */}
-          <div className="flex-shrink-0 flex items-center" style={{ height: "90px" }}>
+          <div className="flex-shrink-0 flex items-stretch">
             <button
-              className="bg-slate-600 hover:bg-slate-700 text-white rounded-xl text-xs font-bold cursor-pointer border-0 leading-snug text-center transition-colors btn-press"
-              style={{ width: "72px", height: "90px" }}
+              className="bg-[#94a3b8] hover:bg-slate-500 text-white rounded-xl text-[12px] font-bold cursor-pointer border-0 w-full md:w-[65px] flex md:flex-col items-center justify-center gap-2 md:gap-1 transition-all btn-press py-3 md:py-0"
             >
-              View<br />All<br />12<br />Issues
+              <span className="leading-none text-center">View<br className="hidden md:block"/>All</span>
+              <span className="text-sm md:text-sm font-black">12</span>
+              <span className="leading-none text-center">Issues</span>
             </button>
           </div>
 

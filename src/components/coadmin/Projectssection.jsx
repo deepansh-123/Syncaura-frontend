@@ -197,14 +197,14 @@ export default function ProjectsSection() {
   const tl = TIMELINE_DATA[timelineView];
 
   return (
-    <div className="flex flex-col gap-4 font-sans pb-16 bg-slate-50 dark:bg-[rgba(46,47,47,0.5)] min-h-screen px-0">
+    <div className="flex flex-col gap-4 font-sans pb-16 bg-slate-50 dark:bg-[rgba(46,47,47,0.5)] min-h-screen px-0 sm:px-2">
       <style>{`
         * { scrollbar-width: none; -ms-overflow-style: none; }
         *::-webkit-scrollbar { display: none; }
       `}</style>
 
       {/* ── 5 Stat Cards ── */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
 
         {/* Total Projects */}
         <div className="bg-white dark:bg-[#1c1c1e] rounded-xl px-4 py-3.5 border border-slate-100 dark:border-slate-800 shadow-[0_2px_8px_rgba(0,0,0,0.07)]">
@@ -307,7 +307,7 @@ export default function ProjectsSection() {
           { name: "Mobile App Launch", pct: 40, color: "#3b82f6" },
           { name: "API Integration", pct: 40, color: "#93c5fd" },
         ].map((p) => (
-          <div key={p.name} className="mb-3.5 mr-10 ml-10">
+          <div key={p.name} className="mb-3.5 sm:mr-10 sm:ml-10">
             <div className="flex justify-between mb-1.5">
               <span className="text-[13px] text-slate-500 dark:text-slate-400">{p.name}</span>
               <span className="text-[13px] font-semibold text-slate-500 dark:text-slate-400">{p.pct}%</span>
@@ -322,8 +322,8 @@ export default function ProjectsSection() {
       {/* ── Health Status ── */}
       <div className="bg-white dark:bg-[#1c1c1e] rounded-xl px-5 py-4 border border-slate-100 dark:border-slate-800 shadow-[0_2px_8px_rgba(0,0,0,0.07)]">
         <p className="text-[18px] font-bold text-slate-500 dark:text-slate-400 mb-4">Health Status</p>
-        <div className="flex items-center gap-20">
-          <div className="relative shrink-0" style={{ width: "140px", height: "140px" }}>
+        <div className="flex flex-col md:flex-row items-center gap-10 md:gap-20">
+          <div className="relative shrink-0 w-[140px] h-[140px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -343,13 +343,13 @@ export default function ProjectsSection() {
               <span className="text-[9px] font-semibold text-slate-400 tracking-wider mt-0.5">PROJECTS</span>
             </div>
           </div>
-          <div className="flex gap-15">
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-15">
             {healthData.map((d) => (
-              <div key={d.name} className="flex items-center gap-3">
+              <div key={d.name} className="flex items-center gap-2 sm:gap-3">
                 <div className="w-3 h-3 rounded-full shrink-0" style={{ background: d.color }} />
                 <div>
-                  <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-200 leading-none">{d.name}</p>
-                  <p className="text-[11px] text-slate-400 ml-2 mt-0.5">({d.value}%)</p>
+                  <p className="text-[12px] sm:text-[13px] font-semibold text-slate-700 dark:text-slate-200 leading-none">{d.name}</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 ml-1 sm:ml-2 mt-0.5">({d.value}%)</p>
                 </div>
               </div>
             ))}
@@ -389,7 +389,7 @@ export default function ProjectsSection() {
         {/* Dynamic headers based on view */}
         <div className={`grid grid-cols-${tl.cols} mb-3 px-1`} style={{ display: "grid", gridTemplateColumns: `repeat(${tl.cols}, 1fr)` }}>
           {tl.headers.map((m) => (
-            <span key={m} className="text-[12px] text-slate-400 font-medium">{m}</span>
+            <span key={m} className="text-[10px] sm:text-[12px] text-slate-400 font-medium">{m}</span>
           ))}
         </div>
 
@@ -401,15 +401,15 @@ export default function ProjectsSection() {
             ))}
           </div>
           {tl.projects.map((p, i) => (
-            <div key={i} className="h-9 relative">
+            <div key={i} className="h-8 sm:h-9 relative">
               <div
-                className={`absolute h-full rounded-lg flex items-center pl-3 transition-all duration-500 ${p.bgClass}`}
+                className={`absolute h-full rounded-lg flex items-center pl-2 sm:pl-3 transition-all duration-500 ${p.bgClass}`}
                 style={{
                   left: `${(p.start / tl.cols) * 100}%`,
                   width: `${(p.span / tl.cols) * 100}%`,
                 }}
               >
-                <span className={`text-[12px] font-semibold whitespace-nowrap ${p.textClass}`}>
+                <span className={`text-[10px] sm:text-[12px] font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${p.textClass}`}>
                   {p.name}
                 </span>
               </div>
@@ -428,65 +428,112 @@ export default function ProjectsSection() {
           <button className="bg-transparent border-0 cursor-pointer text-slate-400 text-xl leading-none tracking-widest">···</button>
         </div>
 
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-slate-100 dark:border-slate-800">
-              {["PROJECT NAME", "STATUS", "HEALTH", "PROGRESS", "TEAM", "ACTIONS"].map((h) => (
-                <th key={h} className="text-[10px] text-slate-400 font-semibold px-2 py-2 text-left tracking-wide whitespace-nowrap">
-                  {h}
-                </th>
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 dark:border-slate-800">
+                {["PROJECT NAME", "STATUS", "HEALTH", "PROGRESS", "TEAM", "ACTIONS"].map((h) => (
+                  <th key={h} className="text-[10px] text-slate-400 font-semibold px-2 py-2 text-left tracking-wide whitespace-nowrap">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {pagedProjects.map((p, i) => (
+                <tr
+                  key={i}
+                  className="border-b border-slate-50 hover:bg-slate-50 dark:bg-[rgba(46,47,47,0.5)] transition-colors"
+                  style={{ position: "relative" }}
+                >
+                  <td className="px-2 py-3 text-[13px] text-slate-700 dark:text-slate-200 font-semibold">{p.name}</td>
+                  <td className="px-2 py-3">
+                    <span
+                      className={`text-[11px] rounded-full px-3 py-1 font-semibold whitespace-nowrap ${p.statusBg} ${p.statusColor}`}
+                    >
+                      {p.status}
+                    </span>
+                  </td>
+                  <td className="px-2 py-3 text-xl">{p.health}</td>
+                  <td className="px-2 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${p.progress}%`, background: p.progressColor }} />
+                      </div>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{p.progress}%</span>
+                    </div>
+                  </td>
+                  <td className="px-2 py-3">
+                    <div className="flex pl-1.5">
+                      {p.team.map((c, j) => <Avatar key={j} color={c} />)}
+                    </div>
+                  </td>
+                  <td className="px-2 py-3" style={{ position: "relative" }}>
+                    <button
+                      onClick={() => setOpenMenuIdx(openMenuIdx === i ? null : i)}
+                      className="bg-transparent border-0 cursor-pointer text-slate-400 text-lg leading-none hover:text-slate-600 dark:text-slate-300 transition-colors"
+                    >
+                      ⋮
+                    </button>
+                    {openMenuIdx === i && (
+                      <ActionMenu
+                        projectName={p.name}
+                        onClose={() => setOpenMenuIdx(null)}
+                      />
+                    )}
+                  </td>
+                </tr>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {pagedProjects.map((p, i) => (
-              <tr
-                key={i}
-                className="border-b border-slate-50 hover:bg-slate-50 dark:bg-[rgba(46,47,47,0.5)] transition-colors"
-                style={{ position: "relative" }}
-              >
-                <td className="px-2 py-3 text-[13px] text-slate-700 dark:text-slate-200 font-semibold">{p.name}</td>
-                <td className="px-2 py-3">
-                  <span
-                    className={`text-[11px] rounded-full px-3 py-1 font-semibold whitespace-nowrap ${p.statusBg} ${p.statusColor}`}
-                  >
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden flex flex-col gap-4">
+          {pagedProjects.map((p, i) => (
+            <div key={i} className="border border-slate-100 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/30">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="text-[14px] font-bold text-slate-700 dark:text-slate-200">{p.name}</h3>
+                  <span className={`inline-block mt-1 text-[10px] rounded-full px-2 py-0.5 font-bold uppercase ${p.statusBg} ${p.statusColor}`}>
                     {p.status}
                   </span>
-                </td>
-                <td className="px-2 py-3 text-xl">{p.health}</td>
-                <td className="px-2 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${p.progress}%`, background: p.progressColor }} />
-                    </div>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{p.progress}%</span>
-                  </div>
-                </td>
-                <td className="px-2 py-3">
-                  <div className="flex pl-1.5">
-                    {p.team.map((c, j) => <Avatar key={j} color={c} />)}
-                  </div>
-                </td>
-
-                {/* ✅ Actions — opens a dropdown menu */}
-                <td className="px-2 py-3" style={{ position: "relative" }}>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{p.health}</span>
                   <button
                     onClick={() => setOpenMenuIdx(openMenuIdx === i ? null : i)}
-                    className="bg-transparent border-0 cursor-pointer text-slate-400 text-lg leading-none hover:text-slate-600 dark:text-slate-300 transition-colors"
-                  >
-                    ⋮
-                  </button>
-                  {openMenuIdx === i && (
-                    <ActionMenu
-                      projectName={p.name}
-                      onClose={() => setOpenMenuIdx(null)}
-                    />
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    className="bg-transparent border-0 cursor-pointer text-slate-400 text-lg p-1"
+                  >⋮</button>
+                </div>
+              </div>
+              
+              <div className="mb-3">
+                 <div className="flex justify-between mb-1">
+                   <span className="text-[11px] text-slate-400 font-medium">Progress</span>
+                   <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">{p.progress}%</span>
+                 </div>
+                 <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${p.progress}%`, background: p.progressColor }} />
+                 </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex pl-1.5">
+                   {p.team.map((c, j) => <Avatar key={j} color={c} />)}
+                </div>
+                <span className="text-[10px] text-slate-400 italic">Project Details →</span>
+              </div>
+              
+              {openMenuIdx === i && (
+                <div className="relative mt-2">
+                   <ActionMenu projectName={p.name} onClose={() => setOpenMenuIdx(null)} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
 
         {/* ✅ Pagination — functional Prev / Next with page count */}
         <div className="flex justify-between items-center mt-4 pt-2 border-t border-slate-50">
@@ -537,11 +584,11 @@ export default function ProjectsSection() {
         {alerts.length === 0 ? (
           <p className="text-[13px] text-slate-400 text-center py-6">✅ No active alerts</p>
         ) : (
-          <div className="flex gap-4 m-3 overflow-x-auto pb-1">
+          <div className="flex flex-wrap gap-4 m-0 sm:m-3 pb-1">
             {alerts.map((alert) => (
               <div
                 key={alert.id}
-                className={`flex-shrink-0 w-[320px] p-3 flex items-start gap-3 rounded-lg ${cardStyles[alert.type]}`}
+                className={`flex-1 min-w-[280px] p-3 flex items-start gap-3 rounded-lg ${cardStyles[alert.type]}`}
               >
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${iconWrapperStyles[alert.type]}`}

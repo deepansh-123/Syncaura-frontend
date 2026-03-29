@@ -47,12 +47,12 @@ export default function AnalyticsSection() {
   const dismiss = (id) => setDismissed((p) => [...p, id]);
 
   return (
-    <div className="flex flex-col gap-4  font-sans pb-10">
+    <div className="flex flex-col gap-4 font-sans pb-10 px-0 sm:px-2">
 
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 1 — 4 STAT CARDS
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-4 gap-35">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* ── Card 1: Total Tasks 50 ── */}
         <div className="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm px-4 pt-3 pb-4">
@@ -197,7 +197,7 @@ export default function AnalyticsSection() {
         </div>
 
         {/* legend row */}
-        <div className="flex items-start gap-10">
+        <div className="flex flex-wrap items-start gap-4 sm:gap-10">
           {[
             { dot: "#94a3b8", count: "15", label: "To Do(30%)" },
             { dot: "#3b82f6", count: "20", label: "In Progress(40%)" },
@@ -400,10 +400,10 @@ export default function AnalyticsSection() {
           </span>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {/* Alert 1 — API Integration Blocked */}
           {!dismissed.includes(1) && (
-            <div className="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
+            <div className="flex-1 min-w-[280px] border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
               {/* red no-entry icon */}
               <div className="shrink-0 mt-0.5">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -425,7 +425,7 @@ export default function AnalyticsSection() {
 
           {/* Alert 2 — QA Bottleneck */}
           {!dismissed.includes(2) && (
-            <div className="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
+            <div className="flex-1 min-w-[280px] border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
               {/* amber warning triangle */}
               <div className="shrink-0 mt-0.5">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -447,7 +447,7 @@ export default function AnalyticsSection() {
 
           {/* Alert 3 — Resource Unavailable */}
           {!dismissed.includes(3) && (
-            <div className="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
+            <div className="flex-1 min-w-[280px] border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 flex items-start gap-3">
               {/* grey person-off icon */}
               <div className="shrink-0 mt-0.5">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -470,12 +470,12 @@ export default function AnalyticsSection() {
 
           {/* View all notifications — grey button */}
           <button
-            className="shrink-0 rounded-xl border-0 cursor-pointer font-semibold text-white text-[13px] leading-snug px-6 transition-colors"
-            style={{ background: "#94a3b8", minWidth: 130 }}
+            className="flex-1 min-w-[130px] rounded-xl border-0 cursor-pointer font-semibold text-white text-[13px] leading-snug px-6 py-4 transition-colors"
+            style={{ background: "#94a3b8" }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#64748b")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "#94a3b8")}
           >
-            View all<br />notifications
+            View all<br className="hidden md:block" /> notifications
           </button>
         </div>
       </div>
@@ -485,7 +485,7 @@ export default function AnalyticsSection() {
       ════════════════════════════════════════════════════════════════════ */}
       <div className="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm px-5 py-5">
         <p className="text-[16px] font-bold text-slate-800 dark:text-white mb-4">Delivery Report</p>
-        <div className="flex items-center gap-10">
+        <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
           {/* donut */}
           <div className="relative shrink-0" style={{ width: 140, height: 140 }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -514,7 +514,7 @@ export default function AnalyticsSection() {
           </div>
 
           {/* legend: Planned + Delivered */}
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-6 sm:gap-8">
             {[
               { dot: "#cbd5e1", label: "Planned", value: 24 },
               { dot: "#2563eb", label: "Delivered", value: 18 },
@@ -526,7 +526,7 @@ export default function AnalyticsSection() {
                 />
                 <div>
                   <p className="text-[12px] text-slate-400 leading-none">{d.label}</p>
-                  <p className="text-[20px] font-bold text-slate-600 dark:text-slate-300 leading-tight">{d.value}</p>
+                  <p className="text-[18px] sm:text-[20px] font-bold text-slate-600 dark:text-slate-300 leading-tight">{d.value}</p>
                 </div>
               </div>
             ))}

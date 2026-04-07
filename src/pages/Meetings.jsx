@@ -6,77 +6,33 @@ import ScheduleMeetingModal from "../components/Meeting/Main/Model/ScheduleMeeti
 import FilterTabs from "../components/Meeting/Main/Tab/FilterTabs";
 import Sidebar from "../components/Meeting/Sidebar/Sidebar";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function Meetings() {
+  
+  const { t } = useTranslation();
+
+  const dispatch = useDispatch();
+
+  
+  const { meetings, isLoading, error } = useSelector(
+    (state) => state.meeting
+  );
+
   const [modalOpen, setModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [activeFilter, setActiveFilter] = useState("all");
 
-  const [meetings, setMeetings] = useState([
-    {
-      id: 1,
-      platform: "Zoom",
-      title: "Weekly Team Standup",
-      startTime: "2025-12-17T10:00:00",
-      endTime: "2025-12-17T11:30:00",
-      avatarCount: 7,
-      isDoc: true,
-    },
-    {
-      id: 2,
-      platform: "Google Meet",
-      title: "Product Review",
-      startTime: "2025-12-17T19:30:00",
-      endTime: "2025-12-17T21:15:00",
-      avatarCount: 4,
-      isDoc: false,
-    },
-    {
-      id: 3,
-      platform: "Zoom",
-      title: "Design Sync",
-      startTime: "2025-12-18T09:30:00",
-      endTime: "2025-12-18T10:15:00",
-      avatarCount: 5,
-      isDoc: false,
-    },
-    {
-      id: 4,
-      platform: "Teams",
-      title: "Sprint Planning",
-      startTime: "2025-12-19T11:00:00",
-      endTime: "2025-12-19T12:30:00",
-      avatarCount: 9,
-      isDoc: false,
-    },
-    {
-      id: 5,
-      platform: "Zoom",
-      title: "Client Discussion",
-      startTime: "2025-12-20T16:00:00",
-      endTime: "2025-12-20T17:00:00",
-      avatarCount: 3,
-      isDoc: false,
-    },
-    {
-      id: 6,
-      platform: "Google Meet",
-      title: "Marketing Update",
-      startTime: "2025-12-21T13:00:00",
-      endTime: "2025-12-21T13:45:00",
-      avatarCount: 6,
-      isDoc: true,
-    },
-    {
-      id: 7,
-      platform: "Zoom",
-      title: "Engineering Review",
-      startTime: "2025-12-17T22:30:00",
-      endTime: "2025-12-17T23:30:00",
-      avatarCount: 8,
-      isDoc: true,
-    },
-  ]);
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(token){
+    dispatch(getMeetings());
+    }
+  }, [dispatch]);
+
+ 
 
   const getMeetingType = (startTime, endTime) => {
     const now = new Date();
@@ -88,7 +44,7 @@ export default function Meetings() {
     return "past";
   };
 
-  const [activeFilter, setActiveFilter] = useState("all");
+ 
 
   const handleFilterChange = (filter) => {
     const order = ["all", "upcoming", "ongoing", "past"];

@@ -31,28 +31,33 @@ const meetingSlice = createSlice({
       })
       .addCase(createMeeting.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.meetings.unshift(action.payload.meeting);
+        state.meetings.unshift({
+          ...action.payload,
+          _id: action.payload._id || action.payload.eventId || Date.now(),
+        });
       })
       .addCase(createMeeting.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
 
      
       .addCase(getMeetings.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getMeetings.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.meetings = action.payload;
+        state.meetings = action.payload || [];
       })
       .addCase(getMeetings.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
 
       .addCase(getMeetingById.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getMeetingById.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -60,11 +65,12 @@ const meetingSlice = createSlice({
       })
       .addCase(getMeetingById.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
 
       .addCase(updateMeetingById.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(updateMeetingById.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -77,26 +83,27 @@ const meetingSlice = createSlice({
       })
       .addCase(updateMeetingById.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
 
       .addCase(deleteMeetingById.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(deleteMeetingById.fulfilled, (state, action) => {
         state.isLoading = false;
 
         state.meetings = state.meetings.filter(
-          (m) => m._id !== action.meta.arg
+          (m) => m._id !== action.payload
         );
 
-        if (state.meeting?._id === action.meta.arg) {
+        if (state.meeting?._id === action.payload) {
           state.meeting = null;
         }
       })
       .addCase(deleteMeetingById.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       });
   },
 });

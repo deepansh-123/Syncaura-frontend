@@ -1,128 +1,126 @@
 # Syncaura 🚀
-Modern, scalable collaborative workspace platform designed for teams to streamline projects, tasks, real-time chats, video meetings, and attendance management in one unified dashboard.
 
-Syncaura integrates multi-role workspaces (Admin, Co-Admin, and User) with global Redux state management, Tailwind-driven aesthetics, client-side validation, and secure JWT-based API communication with auto-refreshing sessions.
+A modern, collaborative workspace platform designed for teams to organize projects, tasks, chats, and video meetings in one single place. 
+
+I've set up the frontend with React, Vite, and Tailwind CSS, using Redux Toolkit for global state management. We also have full validation rules and secure authentication workflows with automatic session refreshing.
+
+---
 
 ## Features
-* **Multi-Role Dashboards**: Customized workspace layouts for Admins, Co-Admins, and Users.
-* **Project & Task Management**: Real-time project boards and interactive checklists.
-* **Real-Time Communication**: Multi-channel chat interface designed for Socket.IO integration.
-* **Interactive Meetings**: Virtual video call client with scheduling and WebRTC/Jitsi integration.
-* **Attendance & Leave Tracker**: Digital sign-in sheet with request approval portals.
-* **Document Repository**: Shared file management, organization, and preview dashboard.
-* **Complaints Portal**: Multi-status feedback logging and tracking interface.
-* **Notice Board**: Corporate bulletin board for publishing notices and announcements.
-* **Global Theme Engine**: Interactive Dark Mode and Light Mode toggles.
-* **JWT Interceptors**: Automatic Bearer token insertion and auto-token refresh queues.
+
+Here is what we have built into the app:
+* **Multi-Role Access**: Dedicated dashboard views for Admins, Co-Admins, and Users.
+* **Projects & Tasks**: Project boards and to-do checklists to keep tasks organized.
+* **Real-time Chat**: Message threads designed to connect with a Socket.IO backend.
+* **Video Meetings**: Virtual meet room scheduler for team video/audio calls.
+* **Attendance Tracker**: A simple clock-in sheet for logging attendance and leaves.
+* **Document Repository**: A central space to upload and preview shared documents.
+* **Complaints Portal**: Form to submit and track feedback or issues.
+* **Notice Board**: Corporate bulletin board for pinning team announcements.
+* **Theme Customization**: Global Light/Dark mode switcher.
+* **JWT Interceptors**: Handles access token injection and token refreshes under the hood.
+
+---
 
 ## Tech Stack
+
 | Layer | Technology |
 | :--- | :--- |
-| **Frontend Core** | React (v19), Vite |
-| **Styling & Theme** | Tailwind CSS, Lucide React, Framer Motion |
+| **Frontend** | React, Vite |
+| **Styling** | Tailwind CSS, Lucide React, Framer Motion |
 | **State Management** | Redux Toolkit |
 | **Routing** | React Router Dom (v7) |
 | **Network Client** | Axios |
-| **Notifications** | React Toastify |
+| **Alerts** | React Toastify |
 | **Form Validation** | React Hook Form |
+
+---
 
 ## System Architecture
 
+Here is a quick map of how the frontend client talks to the backend services:
+
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        SYNCAURA CLIENT LAYER                           │
-│                                                                        │
-│  ┌───────────────────────┐  Validate Inputs  ┌──────────────────────┐  │
-│  │   UI Components &     ├──────────────────>│   validationRules    │  │
-│  │  Pages (SignIn/Up/etc)│                   └──────────────────────┘  │
-│  └──────────┬────────────┘                                             │
-│             │                                                          │
-│             │ Dispatches Actions                                       │
-│             ▼                                                          │
-│  ┌───────────────────────┐  Selects State    ┌──────────────────────┐  │
-│  │     Redux Store       │<──────────────────┤    Slices (Auth,     │  │
-│  │ (Thunks & Operations) │                   │    Theme, Meet)      │  │
-│  └──────────┬────────────┘                   └──────────────────────┘  │
-│             │                                                          │
-│             │ HTTP Requests / WebSockets                               │
-│             ▼                                                          │
-│  ┌───────────────────────┐                   ┌──────────────────────┐  │
-│  │  Axios Client Wrapper │                   │  Local Storage       │  │
-│  │ (Request/Response)    │<─────────────────>│  (accessToken,       │  │
-│  │  Interceptors         │   Read/Write JWT  │   refreshToken)      │  │
-│  └──────────┬────────────┘                   └──────────────────────┘  │
-└─────────────┼──────────────────────────────────────────────────────────┘
-              │
-              │ HTTP / WebSockets (Port 5000)
-              ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                        SYNCAURA SERVER LAYER                           │
-│                                                                        │
-│  ┌───────────────────────┐                   ┌──────────────────────┐  │
-│  │  Express/Node Server  │<─────────────────>│   Socket.IO Server   │  │
-│  │  (REST Controllers)   │                   │ (Real-time events)   │  │
-│  └──────────┬────────────┘                   └──────────┬───────────┘  │
-│             │                                           │              │
-│             └───────────────────┬───────────────────────┘              │
-│                                 ▼                                      │
-│                      ┌──────────────────────┐                          │
-│                      │  MongoDB Database    │                          │
-│                      │ (User/Task Schemas)  │                          │
-│                      └──────────────────────┘                          │
-└────────────────────────────────────────────────────────────────────────┘
+[React Forms & UI Pages]
+      │
+      ▼  (validates input formatting locally)
+[React Hook Form & Validation Rules]
+      │
+      ▼  (dispatches thunk actions)
+[Redux Store & Slices]
+      │
+      ▼  (injects tokens / auto-refreshes on 401s)
+[Axios Client & Interceptors]
+      │
+      ▼  (HTTP / WebSockets on Port 5000)
+[Express / Node Backend Server] ◄───► [Socket.IO Server]
+      │
+      ▼
+[MongoDB Database]
 ```
+
+---
 
 ## Processing Workflow
-1. **User Sign Up / Sign In**:
-   * User inputs credentials on the frontend page.
-   * `validationRules` verifies name, email formatting, and password requirements client-side.
-   * On validation success, an `authThunk` triggers the Axios wrapper.
-2. **Authentication request**:
-   * Request interceptor retrieves `accessToken` from `localStorage` (if present) and appends it to headers.
-   * The backend validates the inputs and issues a short-lived `accessToken` and a long-lived `refreshToken`.
-3. **Session Synchronization**:
-   * On response success, the thunk saves both tokens to `localStorage` and updates the global `authSlice` state.
-   * The user is automatically routed to their dashboard based on their account role (Admin, Co-Admin, or default user).
-4. **Session Token Refresh**:
-   * When an API call fails with `401 Unauthorized` (token expired), the Axios response interceptor pauses the request queue.
-   * It requests a new `accessToken` from `/auth/refresh` using the `refreshToken`.
-   * **On Success**: Restarts all queued requests with the new token.
-   * **On Failure**: Emits an `auth_session_expired` event, clears tokens, logs the user out, and redirects them to the Sign In screen.
+
+Here is how data flows when you register or log in:
+
+1. **User Submits Details**: Form fields verify email formatting and password rules locally using React Hook Form.
+2. **Dispatch Async Action**: On validation success, the page dispatches a Redux thunk (e.g. `loginUser`).
+3. **Axios Interceptor**: The request interceptor automatically reads the access token from local storage and appends it to request headers.
+4. **Backend Processing**: The server checks the database, issues a short-lived `accessToken` and a long-lived `refreshToken`, and sends them back.
+5. **Update Store**: The thunk updates our Redux auth slice state, saves the tokens to local storage, and redirects the user to the correct dashboard.
+6. **Token Refresh**: If a request fails because of an expired token (401 error), the interceptor pauses the request queue, fetches a new access token, and retries the failed requests. If it fails, the user is logged out automatically.
+
+---
 
 ## Cost-Efficient Architecture
-* **Vite HMR**: Hot Module Replacement for near-instant local compiling.
-* **Client-Side Validation**: Stops malformed payloads before they hit the network, saving server computing resources.
-* **Token Queuing Interceptor**: Eliminates redundant token refresh requests by pausing the call stack during refreshes.
-* **Redux Selector Memoization**: Prevents unnecessary UI re-renders, optimizing client memory footprint.
+
+We designed this app to run efficiently and keep hosting/processing costs low:
+* **Client-Side Validation**:catches format errors before hitting the network, saving server CPU cycles.
+* **Request Queuing Interceptor**: Pauses outgoing calls during token refresh to avoid duplicate refresh calls.
+* **Redux Selector Memoization**: Prevents unnecessary UI renders and keeps the app fast.
+
+---
 
 ## Running the Application
-1. Navigate to the frontend directory:
+
+1. Make sure you are in the project folder:
    ```bash
    cd Syncaura-frontend-1
    ```
-2. Install the project dependencies:
+2. Install all the packages:
    ```bash
    npm install
    ```
-3. Run the Vite local development server:
+3. Run the local dev server:
    ```bash
    npm run dev
    ```
 
+---
+
 ## API Documentation
-The API client communicates with the backend server via endpoints documented in:
-* **[API_Architecture.md](file:///c:/Users/Shivratna/OneDrive/Desktop/Syncora%20Fr/Syncaura-frontend-1/API_Architecture.md)**
+
+For instructions on how to call backend endpoints and handle API responses:
+* Check out our **[API_Architecture.md](file:///c:/Users/Shivratna/OneDrive/Desktop/Syncora%20Fr/Syncaura-frontend-1/API_Architecture.md)**.
+
+---
 
 ## Roadmap
-- [ ] Connect chat dashboard with live Socket.IO events
-- [ ] Add Jitsi Meet video frames in the meeting panel
-- [ ] Integrate file uploads and storage in the documents hub
-- [ ] Add mobile layout responsive optimizations
-- [ ] Implement Progressive Web App (PWA) offline capabilities
-- [ ] Set up automated frontend unit testing suite
+
+- [ ] Connect the chat component with live WebSockets.
+- [ ] Add Jitsi Meet video frames in the meeting dashboard.
+- [ ] Integrate file upload logic in the document hub.
+- [ ] Optimize the views for mobile screens.
+- [ ] Add Progressive Web App (PWA) support for offline usage.
+- [ ] Write frontend unit tests.
+
+---
 
 ## Author
-**Shivratna Shinde**
+
+**Shivratna Shinde**  
 Information Technology Student | Full-Stack Developer | Team Lead
 
 * [LinkedIn](https://www.linkedin.com/in/shivratna-shinde-a0a208226/)

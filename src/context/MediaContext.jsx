@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   getCameraAndMic,
   toggleAudioTrack,
   toggleVideoTrack,
   stopAllTracks,
-  getScreenStream
-} from '../services/mediaService';
+  getScreenStream,
+} from "../services/mediaService";
 
 const MediaContext = createContext();
 
@@ -17,40 +17,91 @@ export const MediaProvider = ({ children }) => {
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
 
+  const checkDevices = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    return {
+      hasMic: devices.some((d) => d.kind === "audioinput"),
+      hasCamera: devices.some((d) => d.kind === "videoinput"),
+    };
+  };
+
   // 🎥 Start Camera + Mic
   const startMedia = async () => {
-    const stream = await getCameraAndMic();
-    setLocalStream(stream);
+    const { hasMic, hasCamera } = await checkDevices();
+
+    if (!hasMic && !hasCamera) {
+      setIsMicOn(false);
+      setIsCameraOn(false);
+      throw new Error("no-devices");
+    }
+
+    try {
+      const stream = await getCameraAndMic();
+      setLocalStream(stream);
+    } catch (err) {
+      setIsMicOn(false);
+      setIsCameraOn(false);
+      throw new Error("permission-denied");
+    }
   };
 
   // 🎤 Toggle Mic
   const toggleMic = () => {
+    console.log("Toggle Mic clicked");
+    console.log(localStream);
+
+    if (!localStream) return;
+
     toggleAudioTrack(localStream, !isMicOn);
-    setIsMicOn(!isMicOn);
+    setIsMicOn((prev) => !prev);
   };
 
   // 📷 Toggle Camera
   const toggleCamera = () => {
+    console.log("Toggle Camera clicked");
+
+    if (!localStream) return;
+
     toggleVideoTrack(localStream, !isCameraOn);
-    setIsCameraOn(!isCameraOn);
+    setIsCameraOn((prev) => !prev);
   };
 
-  // 🖥 Screen Share
+  // 🖥 Start Screen Share
   const startScreenShare = async () => {
-    const stream = await getScreenStream();
-    setScreenStream(stream);
-    setIsScreenSharing(true);
+    try {
+      const stream = await getScreenStream();
 
-    stream.getVideoTracks()[0].onended = () => {
-      stopScreenShare();
-    };
+      setScreenStream(stream);
+      setIsScreenSharing(true);
+
+      // When user clicks "Stop sharing" from browser popup
+      stream.getVideoTracks()[0].onended = () => {
+        stopScreenShare();
+      };
+    } catch (err) {
+      console.error("Screen share cancelled:", err);
+      setIsScreenSharing(false);
+    }
   };
 
   const stopScreenShare = () => {
-    stopAllTracks(screenStream);
-    setScreenStream(null);
+    setScreenStream((prev) => {
+      if (prev) {
+        stopAllTracks(prev);
+      }
+      return null;
+    });
+
     setIsScreenSharing(false);
   };
+
+  // 🔥 Cleanup when component unmounts
+  useEffect(() => {
+    return () => {
+      if (localStream) stopAllTracks(localStream);
+      if (screenStream) stopAllTracks(screenStream);
+    };
+  }, [localStream, screenStream]);
 
   return (
     <MediaContext.Provider

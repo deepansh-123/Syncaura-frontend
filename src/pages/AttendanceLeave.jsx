@@ -170,33 +170,37 @@ const AttendanceLeave = () => {
           </div>
         </div>
       </div>
-      <div className="flex items-center px-5 py-3 gap-x-5 2xl:gap-x-15 gap-y-5 mt-2 flex-wrap justify-center">
+      <motion.div
+  initial={{ opacity: 0, x: -40 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.4, ease: "easeOut" }}
+  className="flex items-center gap-6 px-4 py-3 mt-2 ml-4 max-w-[980px]"
+>
         {attendanceData.map((item, index) => (
           <AttendanceCard key={index} {...item} />
         ))}
-        <div className="relative inline-block">
+        <div className="relative inline-block ml-20">
           {/* TOP CARD */}
           <motion.div
-            onClick={() => setShowPopup((prev) => !prev)}
-            ref={triggerRef}
-            whileTap={{ scale: 0.97 }}
-            className="cursor-pointer flex flex-col items-center justify-center w-72 2xl:w-52 gap-3 shadow-[0_0_10px_0_#EDEDED] px-5 py-4 bg-[#FFFFFF] dark:bg-[#2E2F2F] dark:shadow-[0_0_10px_0_#171717] rounded-2xl"
-          >
-            <h1 className="text-[#FF0000] font-normal text-xl">
-              Mark the Presence
-            </h1>
+  onClick={() => setShowPopup((prev) => !prev)}
+  ref={triggerRef}
+  whileTap={{ scale: 0.97 }}
+  className="cursor-pointer w-[220px] h-[65px] px-4 rounded-2xl shadow-[0_0_10px_1px_#EDEDED] dark:shadow-[0_0_10px_1px_#171717] bg-[#FFFFFF] dark:bg-[#2E2F2F] flex flex-col justify-center"
+>
+  <h1 className="text-[#FF0000] font-medium text-lg">
+    Mark the Presence
+  </h1>
 
-            <div className="flex items-center justify-between w-full">
-              {["In :- ", "Out : - "].map((item, idx) => (
-                <p
-                  key={idx}
-                  className="text-[#000000] dark:text-[#F8F8F8] text-sm"
-                >
-                  {item}
-                </p>
-              ))}
-            </div>
-          </motion.div>
+  <div className="flex items-center justify-between mt-1">
+    <p className="text-[#000000] dark:text-[#F8F8F8] text-sm">
+      In: -
+    </p>
+
+    <p className="text-[#000000] dark:text-[#F8F8F8] text-sm">
+      Out: -
+    </p>
+  </div>
+</motion.div>
 
           {/* POPUP */}
           <AnimatePresence>
@@ -207,26 +211,26 @@ const AttendanceLeave = () => {
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="
-    absolute 
-    left-1/2 
-    -translate-x-1/2
-    mt-2 md:mt-5
-    z-50
-    w-[95vw] sm:w-[90vw] md:w-[400px] 
-  "
+                    absolute 
+                    left-1/2 
+                    -translate-x-1/2
+                    mt-2 md:mt-5
+                    z-50
+                    w-[95vw] sm:w-[90vw] md:w-[400px] 
+                  "
               >
                 <div
                   ref={popupRef}
                   className="
-      flex flex-col gap-4
-      bg-[#FFFFFF] dark:bg-[#2E2F2F]
-      shadow-[0_0_10px_1px_#E0DDDD] dark:shadow-[0_0_10px_1px_#1D1D1D]
-      pt-2 pb-5 px-4
-      rounded-xl
-      w-full
-      sm:max-w-[420px]
-      md:max-w-[400px]
-    "
+                    flex flex-col gap-4
+                    bg-[#FFFFFF] dark:bg-[#2E2F2F]
+                    shadow-[0_0_10px_1px_#E0DDDD] dark:shadow-[0_0_10px_1px_#1D1D1D]
+                    pt-2 pb-5 px-4
+                    rounded-xl
+                    w-full
+                    sm:max-w-[420px]
+                    md:max-w-[400px]
+                  "
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -287,16 +291,16 @@ const AttendanceLeave = () => {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
       <div className="hidden md:flex flex-col flex-1 w-full mt-5 overflow-y-auto overflow-x-hidden no-scrollbar">
         <div
           className="sticky top-0 z-20
-    flex items-center justify-between w-full
-    border-t border-b border-[#EDEDED] dark:border-[#575757]
-    bg-[#FFFFFF] dark:bg-[#000000]
-    shadow-[0_4px_10px_0_rgba(0,0,0,0.25)]
-    px-11 py-5"
+          flex items-center justify-between w-full
+          border-t border-b border-[#EDEDED] dark:border-[#575757]
+          bg-[#FFFFFF] dark:bg-[#000000]
+          shadow-[0_4px_10px_0_rgba(0,0,0,0.25)]
+          px-11 py-5"
         >
           <h1 className="uppercase text-base font-medium dark:text-[#FFFFFF] text-[#000000] flex-3/9 w-full text-center">
             Date Range

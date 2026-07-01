@@ -12,6 +12,8 @@ const Projects = () => {
   const [showModel, setShowModel] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState(null);
+  const [direction, setDirection] = useState(0);
+
   const tabData = [
     { title: "All Projects", count: PROJECTS.length },
     { title: "Ongoing", count: PROJECTS.filter((item) => item.priority === "Ongoing").length },
@@ -29,9 +31,17 @@ const Projects = () => {
     setAppliedFilters(newFilters);
   };
 
+  const handleTabChange = (tab) => {
+    const currentIndex = tabData.findIndex(t => t.title === currTab);
+    const nextIndex = tabData.findIndex(t => t.title === tab);
+
+    setDirection(nextIndex > currentIndex ? 1 : -1);
+    setCurrTab(tab);
+  };
+
 
   return (
-    <div className="w-full  py-5 flex flex-col bg-[#FFFFFF] dark:bg-[#000000] mt-2 dark:mt-1 h-full ">
+    <div className="w-full py-5 flex flex-col bg-[#FFFFFF] dark:bg-[#000000] mt-2 dark:mt-1 h-full transition-colors duration-300">
       <div className="px-2 xl:px-6">
         <div className="flex items-center  justify-between px-5 py-2 ">
           <h1 className="font-bold text-3xl text-[#000000] dark:text-[#F8F8F8]">
@@ -56,7 +66,7 @@ const Projects = () => {
                 name={title}
                 count={count}
                 curr={currTab}
-                setCurr={setCurrTab}
+                setCurr={handleTabChange}
               />
             ))}
           </div>
@@ -108,12 +118,25 @@ const Projects = () => {
 
         
       </div>
-      <div className="bg-[#FFFFFF] dark:bg-[#000000]  mt-5" >
-        <div className="px-5 py-3  flex flex-wrap  items-center justify-center gap-x-14 gap-y-8 ">
-          {filteredProjects.map(({ title, department, priority, progress, dueDate, avatars }, idx) => (
-            <ProjectCard key={idx} title={title} department={department} priority={priority} progress={progress} dueDate={dueDate} avatars={avatars} />
-          ))}
-        </div>
+      <div className="bg-[#FFFFFF] dark:bg-[#000000] mt-5 transition-colors duration-500">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currTab}
+            custom={direction}
+            initial={{ x: direction === 1 ? 300 : -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction === 1 ? -300 : 300, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="px-5 py-3 flex flex-wrap items-center justify-center gap-x-14 gap-y-8"
+          >
+          <div className="px-5 py-3  flex flex-wrap  items-center justify-center gap-x-14 gap-y-8 ">
+            {filteredProjects.map(({ title, department, priority, progress, dueDate, avatars }, idx) => (
+              <ProjectCard key={idx} title={title} department={department} priority={priority} progress={progress} dueDate={dueDate} avatars={avatars} />
+            ))}
+          </div>
+          </motion.div>
+        </AnimatePresence>
+        
       </div>
       {showModel && <CreateNewProject onClose={() => setShowModel(false)} />}
     </div>

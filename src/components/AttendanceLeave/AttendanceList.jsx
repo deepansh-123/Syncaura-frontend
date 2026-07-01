@@ -1,4 +1,5 @@
 import { CircleAlert, CircleCheck, Clock, Eye } from "lucide-react";
+import { motion } from "framer-motion";
 
 const AttendanceList = ({ LeaveData, currId, setCurrId }) => {
   const statusColor = {
@@ -19,11 +20,40 @@ const AttendanceList = ({ LeaveData, currId, setCurrId }) => {
     });
   };
 
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.06,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    show: {
+      opacity: 1,
+      transition: {
+        duration: 0.35,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <>
-      <div className="hidden md:flex flex-col w-full px-1 mt-2 ">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="hidden md:flex flex-col w-full px-1 mt-2 "
+      >
+
         {LeaveData.map(({ startDate, endDate, type, reason, status }, idx) => (
-          <div
+          <motion.div
+            variants={itemVariants}
             onClick={() => setCurrId(idx)}
             key={idx}
             className={`flex  relative transition-all duration-300 items-center justify-between w-full bg-[#FFFFFF] dark:bg-[#000000]  px-10 py-6 ${
@@ -62,12 +92,19 @@ const AttendanceList = ({ LeaveData, currId, setCurrId }) => {
             <div className=" text-base  font-medium flex items-center justify-center flex-1/9">
               <Eye className="size-5 text-[#000000] dark:text-[#F8F8F8] " />
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
-      <div className="flex md:hidden w-full flex-col items-center justify-center gap-5 px-2 py-1">
+      </motion.div>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="flex md:hidden w-full flex-col items-center justify-center gap-5 px-2 py-1"
+      >
         {LeaveData.map(({ startDate, endDate, type, reason, status }, idx) => (
-          <div key={idx} className="flex w-full flex-col px-5 sm:px-10 py-7 gap-5 rounded-2xl bg-[#FFFFFF] dark:bg-[#2E2F2F] shadow-[0_0_10px_1px_#EDEDED] dark:shadow-[2px_4px_10px_2px_rgba(255,255,255,0.3)] dark:border border-gray-500  ">
+          <motion.div
+            variants={itemVariants}
+            className="flex w-full flex-col px-5 sm:px-10 py-7 gap-5 rounded-2xl bg-[#FFFFFF] dark:bg-[#2E2F2F] shadow-[0_0_10px_1px_#EDEDED] dark:shadow-[2px_4px_10px_2px_rgba(255,255,255,0.3)] dark:border border-gray-500  ">
             <div className="flex flex-col xs:flex-row items-center flex-wrap justify-between w-full gap-y-4 ">
               <div className="flex flex-row xs:flex-col justify-between w-full xs:w-auto xs:justify-center items-start gap-y-1 ">
                 <h1 className="text-[#000000] dark:text-[#FFFFFF] text-base font-semibold flex-2/5">
@@ -123,9 +160,9 @@ const AttendanceList = ({ LeaveData, currId, setCurrId }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </>
   );
 };

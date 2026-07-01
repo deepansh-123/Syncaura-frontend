@@ -2,11 +2,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
-const PasswordField = ({ register, handleFocus, handleBlur, passRef }) => {
+const PasswordField = ({
+  name = "password",
+  placeholder = "Password",
+  register,
+  handleFocus,
+  handleBlur,
+  passRef,
+  validation = {},
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex flex-col items-start justify-center w-full gap-1 ">
+    <div className="flex flex-col w-full gap-1">
       <motion.div
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
@@ -15,27 +23,15 @@ const PasswordField = ({ register, handleFocus, handleBlur, passRef }) => {
       >
         <div
           ref={passRef}
-          className="bg-[#F8F8F8]  w-full px-4 py-2 flex items-center gap-2
+          className="bg-[#F8F8F8] w-full px-4 py-2 flex items-center gap-2
           border border-transparent rounded-md transition-all duration-200"
         >
           <Lock className="text-black size-6" />
 
           <motion.input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters long",
-              },
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=[\]{};':"\\|,.<>/?]).+$/,
-                message:
-                  "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
-              },
-            })}
+            placeholder={placeholder}
+            {...register(name, validation)}
             onFocus={() => handleFocus(passRef)}
             onBlur={() => handleBlur(passRef)}
             whileFocus={{ scale: 1.01 }}

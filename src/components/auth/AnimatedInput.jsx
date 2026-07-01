@@ -7,8 +7,10 @@ const AnimatedInput = ({
   register,
   wrapperRef,
   handleFocus,
+  name,
   handleBlur,
   iconType = "mail", // "mail" | "user" | "lock" etc.
+  label
 }) => {
   // Choose icon based on type
   const renderIcon = () => {
@@ -44,8 +46,8 @@ const AnimatedInput = ({
         <motion.input
           type={type}
           placeholder={placeholder}
-          {...register(placeholder.toLowerCase().replace(/\s+/g, "_"), {
-            required: `${placeholder} is required`,
+          {...register(name, {
+            required: `${label || name} is required`,
             ...(type === "email"
               ? {
                   pattern: {

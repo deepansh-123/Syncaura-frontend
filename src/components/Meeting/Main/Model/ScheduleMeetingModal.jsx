@@ -1,7 +1,6 @@
-import { X, Calendar, Clock } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { FaFileCirclePlus } from "react-icons/fa6";
 import FileUploadBox from "../FileHandle/FileUploadBox";
 
 export default function ScheduleMeetingModal({ onClose, onSave }) {
@@ -21,7 +20,7 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
       participants: "",
       autoMembers: true,
       document: null,
-      isDoc: false
+      isDoc: false,
     },
   });
 
@@ -75,27 +74,25 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
       isDoc: data.isDoc,
     });
 
-
     onClose();
   };
-
 
   return (
     <>
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/40 dark:bg-white/10 backdrop-blur-xs z-40"
+        className="fixed inset-0 bg-black/40 dark:bg-white/10 backdrop-blur-sm z-40"
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-0">
         <div
           className="
             bg-[#EDEDED] dark:bg-black
-            rounded-[40px]
+            rounded-3xl sm:rounded-[40px]
             p-4 sm:p-6 xl:p-10
-            w-[95vw] sm:w-[90vw] md:w-[760px]
+            w-full sm:w-[90vw] md:w-[760px]
             max-h-[90vh] overflow-y-auto
             relative flex flex-col
           "
@@ -103,12 +100,12 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 sm:top-7 sm:right-7"
+            className="absolute top-4 right-4 sm:top-7 sm:right-7"
           >
-            <X className="size-7 sm:size-8 text-[#000000] dark:text-gray-500" />
+            <X className="size-6 sm:size-8 text-black dark:text-gray-400" />
           </button>
 
-          <h2 className="text-[22px] sm:text-[28px] font-semibold mb-4 text-[#000000] dark:text-white">
+          <h2 className="text-xl sm:text-[28px] font-semibold mb-4 text-black dark:text-white">
             Schedule New Meeting
           </h2>
 
@@ -117,58 +114,50 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <div className="flex flex-col gap-5 mt-4">
 
+              {/* Title */}
               <div>
-                <label className="block text-lg font-medium mb-2 text-[#000000] dark:text-white">
+                <label className="block text-sm sm:text-lg font-medium mb-2 text-black dark:text-white">
                   Meeting Title
                 </label>
                 <input
                   {...register("title", { required: true })}
                   placeholder="eg: my first meeting"
-                  className="w-full h-11 rounded-full p-3
-                  bg-white text-[#898888] dark:bg-[#2E2F2F] placeholder:text-[#898888]
+                  className="w-full h-11 rounded-full px-4
+                  bg-white text-[#898888] dark:bg-[#2E2F2F]
                   dark:text-gray-200 outline-none"
                 />
               </div>
 
-              <div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  {[
-                    { type: "date", name: "date", label: "Date" },
-                    { type: "time", name: "start", label: "Start Time" },
-                    { type: "time", name: "end", label: "End Time" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex-1 flex flex-col gap-1">
-                      {/* Label */}
-                      <label className="text-sm font-medium text-[#000000] dark:text-white">
-                        {item.label}
-                      </label>
-
-                      {/* Input */}
-                      <div className="relative">
-                        <input
-                          type={item.type}
-                          {...register(item.name, { required: true })}
-                          className="
-            w-full h-11 rounded-full
-            py-3 px-5
-            text-[#898888]
-            bg-white dark:bg-[#2E2F2F]
-            dark:text-gray-200
-            outline-none
-            date-input
-          "
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
+              {/* Date & Time */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                {[
+                  { type: "date", name: "date", label: "Date" },
+                  { type: "time", name: "start", label: "Start Time" },
+                  { type: "time", name: "end", label: "End Time" },
+                ].map((item, i) => (
+                  <div key={i} className="flex-1 flex flex-col gap-1">
+                    <label className="text-sm font-medium text-black dark:text-white">
+                      {item.label}
+                    </label>
+                    <input
+                      type={item.type}
+                      {...register(item.name, { required: true })}
+                      className="
+                        w-full h-11 rounded-full
+                        px-4
+                        bg-white dark:bg-[#2E2F2F]
+                        text-[#898888] dark:text-gray-200
+                        outline-none
+                      "
+                    />
+                  </div>
+                ))}
               </div>
 
               {/* Platform */}
               <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-[#000000] dark:text-white">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-2 mb-2">
+                  <label className="text-sm font-medium text-black dark:text-white">
                     Platform
                   </label>
 
@@ -176,12 +165,9 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                     <input
                       type="checkbox"
                       checked={autoLink}
-                      onChange={(e) =>
-                        setValue("autoLink", e.target.checked)
-                      }
+                      onChange={(e) => setValue("autoLink", e.target.checked)}
                       className="hidden"
                     />
-
                     <span
                       className={`w-4 h-4 rounded-full border-2 flex items-center justify-center
                         ${autoLink
@@ -201,8 +187,7 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                         </svg>
                       )}
                     </span>
-
-                    <span className="text-[#000000] dark:text-white">
+                    <span className="text-black dark:text-white">
                       Auto-generate meeting link
                     </span>
                   </label>
@@ -214,9 +199,9 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                       key={p}
                       type="button"
                       onClick={() => setValue("platform", p)}
-                      className={`flex-1 min-w-[120px] h-11 rounded-full p-2 text-sm font-medium
+                      className={`flex-1 min-w-[120px] h-11 rounded-full text-sm font-medium
                         ${platform === p
-                          ? "border-2 border-[#2461E6] text-[#2461E6] bg-white dark:border-[#73FBFD] dark:text-[#73FBFD] dark:bg-[#293838]"
+                          ? "border-2 border-[#2461E6] text-[#2461E6] bg-white dark:border-[#73FBFD] dark:text-[#73FBFD]"
                           : "bg-white text-[#898888] dark:bg-[#2E2F2F] dark:text-[#898888]"
                         }`}
                     >
@@ -228,27 +213,24 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
 
               {/* Participants */}
               <div>
-                <label className="text-sm font-medium text-[#000000] dark:text-white mb-2 block">
+                <label className="text-sm font-medium text-black dark:text-white mb-2 block">
                   Participants
                 </label>
                 <input
                   {...register("participants")}
                   placeholder="Enter emails separated by commas"
-                  className="w-full text-[#898888] h-11 rounded-full p-3
-                  bg-white dark:bg-[#2E2F2F] placeholder:text-[#898888]
-                  dark:text-gray-200 outline-none"
+                  className="w-full h-11 rounded-full px-4
+                  bg-white dark:bg-[#2E2F2F]
+                  text-[#898888] dark:text-gray-200 outline-none"
                 />
 
                 <label className="flex items-center gap-2 mt-2 cursor-pointer text-xs">
                   <input
                     type="checkbox"
                     checked={autoMembers}
-                    onChange={(e) =>
-                      setValue("autoMembers", e.target.checked)
-                    }
+                    onChange={(e) => setValue("autoMembers", e.target.checked)}
                     className="hidden"
                   />
-
                   <span
                     className={`w-4 h-4 rounded-full border-2 flex items-center justify-center
                       ${autoMembers
@@ -268,17 +250,15 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                       </svg>
                     )}
                   </span>
-
-                  <span className="text-[#000000] dark:text-white">
+                  <span className="text-black dark:text-white">
                     Auto add default members
                   </span>
                 </label>
               </div>
 
               {/* Notes */}
-
               <div>
-                <label className="text-sm font-medium text-[#000000] dark:text-white mb-2 block">
+                <label className="text-sm font-medium text-black dark:text-white mb-2 block">
                   Initial Notes
                 </label>
                 <FileUploadBox
@@ -286,13 +266,15 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                   setValue={setValue}
                   watch={watch}
                 />
-
               </div>
             </div>
 
             {/* Footer */}
             <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-              <button onClick={onClose} className="text-sm text-[#000000] dark:text-white">
+              <button
+                onClick={onClose}
+                className="text-sm text-black dark:text-white"
+              >
                 Cancel
               </button>
 

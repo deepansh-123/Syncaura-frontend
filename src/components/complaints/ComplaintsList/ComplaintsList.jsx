@@ -1,4 +1,6 @@
-import { Eye } from "lucide-react";
+import { CircleAlert, CircleCheck, Clock, Eye } from "lucide-react";
+import { FaClock } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 export default function ComplaintsList({
   COMPLAINTS,
@@ -16,7 +18,41 @@ export default function ComplaintsList({
     year: "numeric",
   });
 };
+ const mobileStatusStyle = (status) => {
+    if (status === "open") return " bg-[#FFC2C2] dark:bg-[#3D2D2D] text-[#C71212]";
+    if (status === "in progress") return "bg-[#FEF2C2] dark:bg-[#3E3A29] text-[#C05328]";
+    return "bg-[#D1FAE5] dark:bg-[#1F402F] text-[#29CC39]";
+  };
 
+  const mobileStatusIcon = (status) => {
+    if (status === "open")
+      return <CircleAlert className="size-4 fill-[#FFC2C2] text-[#C71212] dark:fill-[#3D2D2D]" />;
+    if (status === "in progress")
+      return <Clock className="size-4 text-[#C05328]   " />;
+    return <CircleCheck className="size-4 fill-[#D1FAE5] text-[#29CC39] dark:fill-[#1F402F]  " />;
+  };
+
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.06,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    show: {
+      opacity: 1,
+      transition: {
+        duration: 0.35,
+        ease: "easeOut",
+      },
+    },
+  };
 
 
   return (
@@ -42,11 +78,20 @@ export default function ComplaintsList({
           </div>
         </div>
 
-        <div className="flex flex-col overflow-y-auto no-scrollbar">
+        <motion.div
+          className="flex flex-col overflow-y-auto no-scrollbar"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          key={COMPLAINTS.length}
+        >
+
           {COMPLAINTS.map(({ id, subject, status, category, date }, idx) => (
-            <div
+            <motion.div
+              variants={itemVariants}
               onClick={() => setActiveId(id)}
-              key={idx}
+              key={id}
+
               className={`relative grid py-5 grid-cols-11 px-5 xl:px-15 2xl:px-20 gap-x-2 place-items-center
                 transition-all duration-300
                 ${
@@ -93,85 +138,64 @@ export default function ComplaintsList({
               <div className="text-sm flex items-center justify-center w-full font-semibold col-span-1 text-[#000000] dark:text-[#FFFFFF]">
                 <Eye className="text-xl text-black dark:text-gray-300" />
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
+      <div className="h-px block md:hidden w-full bg-[#E0DDDD] dark:bg-[#2E2F2F]  " />
 
       <div
-        className="flex md:hidden flex-col gap-4 px-2 sm:px-5
-        max-h-[calc(100vh-120px)] overflow-y-auto
-        no-scrollbar pb-25 pt-5 sm:py-0"
+        className="
+     md:hidden
+    grid
+    grid-cols-1
+    xssm:grid-cols-2
+    
+    gap-5
+    px-5
+    h-[calc(100dvh-120px)]
+    overflow-y-auto
+    min-h-0
+    pb-32
+    no-scrollbar
+    mt-5
+  "
       >
         {COMPLAINTS.map(({ id, subject, category, status, date }, idx) => (
           <div
             key={COMPLAINTS.length + idx}
               onClick={() => setActiveId(id)}
-            className="flex flex-col gap-5 px-5 py-5 shadow-[0_2px_6px_rgba(0,0,0,4)]
-              dark:shadow-[0_2px_6px_rgba(0,0,0,3)]
-              hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)]
-              transition-shadow duration-200 rounded-2xl"
+            className="flex flex-col gap-2 bg-[#FFFFFF] dark:bg-[#2E2F2F]  px-5 py-2 shadow-[0_0_10px_3px_#D2D2D233]
+              dark:shadow-[0_0_10px_3px_#D2D2D233]
+              transition-shadow duration-200 rounded-2xl relative h-33"
           >
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                Complaint id
+            <div className="flex w-full items-center justify-between ">
+              <div className="flex items-center justify-start ">
+                <h1 className="text-xs text-[#000000] dark:text-[#FFFFFF]" >{id}</h1>
               </div>
-              <div className="col-span-5 text-[#000000] dark:text-[#FFFFFF] text-sm">
-                {id}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                subject
-              </div>
-              <div className="col-span-5 text-[#000000] dark:text-[#FFFFFF] text-sm">
-                {subject}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                category
-              </div>
-              <div className="col-span-5 text-[#000000] dark:text-[#FFFFFF] text-sm">
-                {category}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                date
-              </div>
-              <div className="col-span-5 text-[#000000] dark:text-[#FFFFFF] text-sm">
-                {formatDate(date)}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                status
-              </div>
-              <div className="col-span-5 text-[#000000] dark:text-[#FFFFFF] text-sm">
+              <div className="flex items-center justify-end ">
                 <div
-                  className={`flex items-center gap-2 justify-center py-1 rounded-2xl px-4 ${statusStyle(
+                  className={`flex items-center gap-2 justify-center py-1 w-25 rounded-2xl  ${mobileStatusStyle(
                     status.toLowerCase()
                   )}`}
                 >
-                  {statusIcon(status.toLowerCase())}
-                  <span>{status}</span>
+                  {mobileStatusIcon(status.toLowerCase())}
+                  <span className="text-xs font-semibold" >{status}</span>
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-9 gap-5 place-items-start">
-              <div className="uppercase text-[#000000] dark:text-[#FFFFFF] col-span-4 font-semibold text-base">
-                action
-              </div>
-              <div className="col-span-5 text-[#000000] px-5  dark:text-[#FFFFFF] ">
-                <Eye className="text-xl text-black dark:text-gray-300" />
-              </div>
+            <div className="flex flex-col justify-center items-start w-full ">
+              <h1 className="text-base font-bold text-[#000000] dark:text-[#FFFFFF]" >{subject}</h1>
+              <h2 className="text-sm font-light text-[#000000] dark:text-white" >{category}</h2>
             </div>
+            <div className="flex items-center justify-start gap-2 ">
+              <FaClock className="size-5 text-white dark:text-[#2E2F2F] fill-black dark:fill-gray-400"  />
+              <h1 className="text-[#000000] dark:text-[#FFFFFF] font-light text-xs" >{formatDate(date)}</h1>
+            </div>
+            <div className="absolute bottom-5 right-5 ">
+              <Eye className="size-6 text-gray-700 dark:text-gray-300" />
+            </div>
+           
           </div>
         ))}
       </div>

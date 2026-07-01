@@ -1,41 +1,85 @@
-import Announcements from "../components/userdashboard/DashboardComponents/Announcements";
-import MeetingsToday from "../components/userdashboard/DashboardComponents/MeetingsToday";
-import StatsCard from "../components/userdashboard/DashboardComponents/StatsCard";
-import TaskList from "../components/userdashboard/DashboardComponents/TaskList";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import Analytics from "../components/userdashboard/subpages/Analytics";
+import Projects from "../components/userdashboard/subpages/Projects";
+import Dashboard from "../components/userdashboard/subpages/Dashboard";
 
-export default function UserDashboard() {
-  const statsData = [
-    { title: "Due Today", value: 4, percentage: "+12%", iconBg: "bg-blue-50", percentageBg: "bg-blue-200", percentageText: "text-blue-700" },
-    { title: "Pending Tasks", value: 12, percentage: "+12%", iconBg: "bg-orange-50", percentageBg: "bg-orange-200", percentageText: "text-orange-500", iconColor: "text-orange-400" },
-    { title: "Completed Tasks", value: 26, percentage: "+12%", iconBg: "bg-green-50", percentageBg: "bg-green-100", percentageText: "text-green-600", iconColor: "text-green-600" },
-  ];
+const UserDashboard = () => {
+  const isDark = useSelector((state) => state.theme.isDark);
+
+  const tabs = ["Dashboard", "Projects", "Analytics"];
+  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const [direction, setDirection] = useState(0);
+
+  const handleTabChange = (tab) => {
+    const currentIndex = tabs.indexOf(selectedTab);
+    const nextIndex = tabs.indexOf(tab);
+
+    setDirection(nextIndex > currentIndex ? 1 : -1);
+    setSelectedTab(tab);
+  };
 
   return (
-    <div className="w-full min-h-screen bg-[#f6f7fb] px-3 sm:px-5 lg:px-8 flex flex-col items-center justify-start space-y-8 py-10">
+    <div className="relative w-full h-full flex flex-col transition-colors duration-500 border-t dark:border-black bg-white dark:bg-black">
+      
+      {/* Header & Tab Switcher */}
+      <div className="flex flex-col sm:flex-row items-center justify-between lg:justify-start px-5 md:px-10 gap-10 gap-y-3 pt-6">
+        <h1 className="text-2xl font-medium text-black dark:text-white">
+          Dashboard
+        </h1>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-[1440px]">
-        {statsData.map((item, idx) => (
-          <div key={idx} className="w-full flex justify-center">
-            <StatsCard {...item} />
-          </div>
-        ))}
+        
+        <div className="relative flex items-center px-5 py-2 gap-5 rounded-3xl border border-[#E3E3E3] dark:border-[#73FBFD]">
+          {tabs.map((item) => (
+            <button
+              key={item}
+              onClick={() => handleTabChange(item)}
+              className="relative z-10 px-3 py-1 outline-none"
+            >
+              <motion.span
+                animate={{
+                  color:
+                    selectedTab === item
+                      ? isDark
+                        ? "#73FBFD" // Active color in dark mode
+                        : "#2461E6" // Active color in light mode
+                      : isDark
+                      ? "#FFFFFF" // Inactive color in dark mode
+                      : "#9CA3AF", // Inactive color in light mode
+                }}
+                transition={{ duration: 0.2 }}
+                className={`relative text-xs ${
+                  selectedTab === item ? "font-bold" : "font-semibold"
+                } sm:text-sm`}
+              >
+                {item}
+              </motion.span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Main Dashboard Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-20 gap-6 w-full max-w-[1440px]">
-        {/* LEFT SIDE — Task List */}
-        <div className="col-span-1 lg:col-span-14 w-full">
-          <TaskList />
-        </div>
-
-        {/* RIGHT SIDE — Announcements + Meetings */}
-        <div className="col-span-1 lg:col-span-6 w-full flex flex-col gap-4">
-          <Announcements />
-          <MeetingsToday />
-        </div>
+      {/* Page Content */}
+      <div className="relative flex-1 overflow-hidden px-5 md:px-10 pt-6 pb-24">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={selectedTab}
+            custom={direction}
+            initial={{ x: direction === 1 ? 300 : -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction === 1 ? -300 : 300, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="absolute inset-0 overflow-y-auto no-scrollbar rounded-xl p-6"
+          >
+            {selectedTab === "Dashboard" && <Dashboard />}
+            {selectedTab === "Analytics" && <Analytics />}
+            {selectedTab === "Projects" && <Projects />}
+          </motion.div>
+        </AnimatePresence>
       </div>
-
     </div>
   );
-}
+};
+
+export default UserDashboard;

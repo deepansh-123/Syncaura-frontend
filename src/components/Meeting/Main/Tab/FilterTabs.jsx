@@ -10,12 +10,30 @@ const filters = [
 export default function FilterTabs({ activeFilter, setActiveFilter }) {
   return (
     <div className="w-full overflow-x-auto scrollbar-hide">
-      <div className="bg-[#EDEDED] w-full justify-around sm:w-96 dark:bg-[#383838] flex gap-1 px-2 py-1 rounded-4xl relative  ">
+  
+      <div
+        className="
+          bg-[#ededed]
+          dark:bg-[#383838]
+          w-fit
+          flex items-center
+          gap-1
+          p-1
+          rounded-full
+          relative
+        "
+      >
+  
         {filters.map((item) => {
+  
           const isActive = activeFilter === item.key;
-
+  
           return (
-            <div key={item.key} className="relative shrink-0">
+            <div
+              key={item.key}
+              className="relative"
+            >
+  
               {isActive && (
                 <motion.div
                   layoutId="active-pill"
@@ -24,25 +42,38 @@ export default function FilterTabs({ activeFilter, setActiveFilter }) {
                     stiffness: 500,
                     damping: 35,
                   }}
-                  className="absolute inset-0 bg-[#2461E6] dark:bg-[#73FBFD] rounded-4xl"
+                  className="
+                    absolute inset-0
+                    bg-[#2563eb]
+                    dark:bg-[#73FBFD]
+                    rounded-full
+                  "
                 />
               )}
-
-              <p
+  
+              <button
                 onClick={() => setActiveFilter(item.key)}
                 className={`
-                  relative z-10 px-4 py-1 flex items-center justify-center cursor-pointer rounded-4xl
-                  text-[#000000] dark:text-[#D2D2D2]
+                  relative z-10
+                  px-4 py-1.5
+                  text-[13px]
+                  font-medium
+                  rounded-full
                   whitespace-nowrap
-                  ${isActive ? "text-white dark:text-black" : ""}
+                  transition
+                  ${isActive
+                    ? "text-white dark:text-black"
+                    : "text-[#4b5563] dark:text-[#d1d5db]"
+                  }
                 `}
               >
                 {item.label}
-              </p>
+              </button>
+  
             </div>
           );
         })}
       </div>
+  
     </div>
-  );
-}
+  );}

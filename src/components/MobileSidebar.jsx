@@ -18,8 +18,9 @@ import {
     LogOut,
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {logout} from "../redux/slices/authSlice"
 
 
 const menuItems = [
@@ -38,9 +39,12 @@ const menuItems = [
 
 export default function MobileSidebar({ open, setOpen }) {
     const { isDark } = useSelector((state)=>state.theme.isDark)
+    const dispatch=useDispatch()
+    const navigate=useNavigate()
     const logOutHandle = () => {
         console.log('LogOut SUccessfully');
-
+        dispatch(logout());
+        navigate("/")
     }
 
     return (

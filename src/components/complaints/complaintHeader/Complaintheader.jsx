@@ -48,7 +48,7 @@ const Complaintheader = ({ search, setSearch, onApplyFilters }) => {
    
                 <div
                     className="flex w-3/5 sm:w-full items-center gap-x-2 
-             bg-[#EDEDED] dark:bg-[#000000] 
+             bg-[#EDEDED] dark:bg-[#2E2F2F] 
              px-4 rounded-3xl h-10"
                 >
                     <Search className="size-4 sm:size-5 text-[#777575] shrink-0" />

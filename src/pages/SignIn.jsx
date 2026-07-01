@@ -1,11 +1,19 @@
 import { Loader, Mail } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import SocialAuthButton from "../components/auth/SocialAuthButton";
 import { motion } from "framer-motion";
 import PasswordField from "../components/auth/PasswordField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AnimatedInput from "../components/auth/AnimatedInput";
+import { toast } from "react-toastify";
+import { loginUser } from "../redux/features/authThunks";
+import { useDispatch, useSelector } from "react-redux";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub, FaFacebook } from "react-icons/fa";
+import BASE_URL from "../config/routes";
+import { setCredentials } from "../redux/slices/authSlice";
+
 
 const SignIn = () => {
   const {
@@ -14,16 +22,68 @@ const SignIn = () => {
     watch,
     formState: { errors },
   } = useForm();
-  const [isSubmitting, setIsSubmitting]=useState(false)
-  
+  const dispatch=useDispatch()
+
   const wrapperRef = useRef(null);
   const passRef = useRef(null);
+  const [isSubmitting, setIsSubmitting]=useState(false);
+  const navigate=useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const handleGoogleLogin = () => {
+    try {
+      window.location.href = `${BASE_URL}/api/auth/google`;
+    } catch (error) {
+      console.error("Google login initiation failed:", error);
+      toast.error("Failed to initiate Google Login. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const token = searchParams.get("token") || searchParams.get("accessToken");
+    const refreshToken = searchParams.get("refreshToken");
+    const role = searchParams.get("role");
+    const userName = searchParams.get("name");
+
+    if (error) {
+      toast.error(decodeURIComponent(error));
+      navigate("/sign-in", { replace: true });
+    } else if (token) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("accessToken", token);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+
+      dispatch(
+        setCredentials({
+          user: { name: userName || "User", role: role || "user" },
+          token,
+        })
+      );
+
+      toast.success(`Welcome Back ${userName || "User"}!!`);
+
+      switch (role) {
+        case "Admin":
+          navigate("/admin");
+          break;
+        case "Co-Admin":
+          navigate("/co-admin");
+          break;
+        default:
+          navigate("/user-dashboard");
+      }
+    }
+  }, [searchParams, dispatch, navigate]);
+
   const socialProviders = [
     {
       id: "google",
       icon: "/images/Auth/google.png",
       alt: "Google login",
-      onClick: () => console.log("Google Login"),
+      onClick: handleGoogleLogin,
     },
     {
       id: "github",
@@ -43,162 +103,140 @@ const SignIn = () => {
     ref.current?.classList.add(
       "border-[#01509C]",
       "ring-2",
-      "ring-[#01509C]/30"
+      "ring-[#01509C]/30",
     );
   };
   const handleBlur = (ref) => {
     ref.current?.classList.remove(
       "border-[#01509C]",
       "ring-2",
-      "ring-[#01509C]/30"
+      "ring-[#01509C]/30",
     );
   };
-  const onSubmit = (data) => {
-   setIsSubmitting(true);
-   setTimeout(()=>{
-     console.log(data);
-     setIsSubmitting(false)
-   }, [1000])
-  };
-  const onError = (error) => {
-    console.log(error);
-  };
-  return (
-    <div
-      class="bg-[radial-gradient(ellipse_60%_70%_at_center,#4a9df0_0%,#01509C_65%,#013b73_100%)]
- w-full min-h-screen flex items-center justify-center overflow-hidden  "
-    >
-      <motion.div
-      className="relative flex items-center justify-center w-[90%] md:w-[80%] lg:w-3/4 2xl:w-1/2"
-      
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25, duration: 1 }}
+  const onSubmit = async (data) => {
+     try {
+      setIsSubmitting(true)
+       const res = await dispatch(loginUser(data)).unwrap();
+       console.log(res);
+       
+ 
+       toast.success(`Welcome Back ${res?.user?.name}!!`);
+ 
+       switch (res?.user?.role) {
+         case "Admin":
+           navigate("/admin");
+           break;
+         case "Co-Admin":
+           navigate("/co-admin");
+           break;
+         default:
+           navigate("/user-dashboard");
+       }
+     } catch (err) {
+       toast.error(err || "Registration failed");
+     }finally{
+      setIsSubmitting(false)
+     }
+   };
+ 
+   const onError = (errors) => {
+    isSubmitting(false)
+     const firstError = Object.values(errors)[0];
+ 
+     if (firstError?.message) {
+       toast.error(firstError.message);
+     } else {
+       toast.error("Please fix the form errors");
+     }
+ 
+     console.log(errors);
+   };
+ 
+ return (
+  <div className="w-full h-screen bg-black flex items-center justify-center">
 
-  
-    >
-        <div
-          className="absolute -bottom-5 -right-6 md:-bottom-11 md:-right-11 z-20 size-20 md:size-25 rounded-full bg-linear-to-bl 
- from-[#868686] to-[#ECECEC]"
-        />
-        <div
-          className="absolute -top-5 -left-6 md:-top-11 md:-left-11 z-20 size-20 md:size-25 rounded-full bg-linear-to-bl 
- from-[#0050FF] to-[#0040CC]"
-        />
-        <div className="rounded-4xl lg:rounded-r-none z-80 py-5 xl:py-15 px-10 xl:px-20 pr-5 xl:pr-15  w-full bg-[#ECECEC] flex flex-col items-center justify-center">
-          <h1 className="text-[#000000] text-2xl font-bold">Welcome Back</h1>
-          <form
-            onSubmit={handleSubmit(onSubmit, onError)}
-            className="space-y-4 w-full mt-10"
-          >
-            <div className="relative flex flex-col items-start justify-center gap-1.5 ">
-              <label className="text-[#000000] text-base font-medium">
-                Email Address
-              </label>
-              <div className="flex flex-col items-start justify-center w-full gap-1 ">
-                <AnimatedInput
-  type="email"
-  placeholder="Email"
-  iconType="mail"
-  register={register}
-  wrapperRef={wrapperRef}
-  handleFocus={handleFocus}
-  handleBlur={handleBlur}
+    {/* MAIN WHITE CONTAINER */}
+    <div className="w-[95%] h-[90%] bg-white dark:bg-[#0F172A] rounded-3xl flex overflow-hidden relative">
+
+      {/* LEFT SIDE */}
+      <div className="w-[45%] bg-[#1E4D7B] relative flex items-center justify-center">
+
+        {/* CURVE */}
+        <div className="absolute right-0 top-0 w-[70%] h-full bg-white dark:bg-[#0F172A] rounded-l-[100px]"></div>
+
+        {/* IMAGE */}
+        <img
+  src="/images/Auth/loginHuman.png"
+  alt="login"
+  className="w-[420px] lg:w-[500px] z-10 scale-x-[-1]"
 />
+      </div>
 
-              </div>
-            </div>
+      {/* RIGHT SIDE */}
+      <div className="w-full flex flex-col items-center max-w-md space-y-5">
 
-            <div className="relative flex flex-col items-start justify-center w-full gap-1.5 ">
-              <label className="text-[#000000] text-base font-medium">
-                Password
-              </label>
-              <div className="flex flex-col items-start justify-center w-full gap-1 ">
-                <PasswordField
-                  register={register}
-                  handleFocus={handleFocus}
-                  handleBlur={handleBlur}
-                  passRef={passRef}
-                />
-                <div className="flex items-center justify-end w-full ">
-                  <p className="text-sm text-blue-500 hover:underline transition-all duration-500 cursor-pointer font-semibold">
-                    Forgot Password?
-                  </p>
-                </div>
-              </div>
-            </div>
-            <motion.div
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 12px 25px rgba(0,0,0,0.25)",
-              }}
-              whileTap={{
-                scale: 0.95,
-                boxShadow: "0px 6px 15px rgba(0,0,0,0.2)",
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-              }}
-              className="relative flex items-start justify-center w-full rounded-md bg-[#2457C5] py-2 px-3"
-            >
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                whileHover={{ y: -1 }}
-                whileTap={{ y: 1 }}
-                transition={{ type: "spring", stiffness: 400 }}
-                className="text-[#F8F8F8] font-bold text-lg"
-              >
-               {isSubmitting ? <Loader className="size-5 text-white animate-spin" /> : " Sign In"}
-              </motion.button>
-            </motion.div>
-            <div className="flex relative items-center justify-center w-full top-2 ">
-              <span className="h-0.5 bg-black  w-full" />
-              <h1 className="absolute -top-2.5  bg-[#ECECEC] px-2 text-black text-sm font-bold flex-1/3">
-                Or continue with
-              </h1>
-            </div>
-            <div className="flex items-center justify-center w-full gap-4 mt-8 ">
-              {socialProviders.map((provider) => (
-                <SocialAuthButton
-                  key={provider.id}
-                  icon={provider.icon}
-                  alt={provider.alt}
-                  onClick={provider.onClick}
-                />
-              ))}
-            </div>
-            <div className="flex items-center justify-center w-full gap-1 ">
-              <span className="text-[#000000] text-base font-semibold">
-                Don’t have an account?{" "}
-              </span>
-              <Link
-                to={"/sign-up"}
-                className="flex items-center justify-center"
-              >
-                <span className="text-blue-500 hover:underline text-xl font-semibold">
-                  {" "}
-                  Sign Up
-                </span>
-              </Link>
-            </div>
-          </form>
-        </div>
-        <div className=" rounded-r-4xl relative z-100  w-full px-7 py-23.5 bg-[#2461E6] hidden lg:flex flex-col items-center justify-center">
-          <div className="bg-[#FFFFFF21] border border-[#7B9CE282] h-75 xl:h-95 w-2/3 rounded-4xl" />
-          <div className="absolute z-60 -left-20 xl:-top-5 -top-7">
-            <img
-              src="/images/Auth/loginHuman.png"
-              alt=""
-              className="object-fill scale-100"
-            />
+        <div className="w-[380px] space-y-6 mt-4">
+
+          <h1 className="text-2xl font-semibold text-center text-gray-800 dark:text-white">
+            Welcome Back
+          </h1>
+
+          {/* EMAIL */}
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">📧</span>
+            <input
+  type="email"
+  placeholder="Email Address"
+  className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none"
+/>
           </div>
+
+          {/* PASSWORD */}
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🔒</span>
+            <input
+  type="password"
+  placeholder="Password"
+  className="w-full border border-gray-300 px-4 py-3 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+/>
+          </div>
+
+          <p className="text-sm text-right text-blue-500 cursor-pointer">
+            Forgot Password?
+          </p>
+
+          <button className="w-full bg-blue-600 text-white py-3 rounded-md shadow-md">
+            Sign In
+          </button>
+
+          <div className="flex items-center my-6">
+  <div className="flex-grow h-px bg-gray-300"></div>
+  <span className="mx-4 text-sm text-gray-400">Or continue with</span>
+  <div className="flex-grow h-px bg-gray-300"></div>
+</div>
+
+<div className="flex justify-center gap-4 mb-4">
+  <button type="button" onClick={handleGoogleLogin} className="border p-2 rounded-md hover:shadow">
+    <FcGoogle size={20} />
+  </button>
+  <button className="border p-2 rounded-md hover:shadow">
+    <FaGithub size={20} />
+  </button>
+  <button className="border p-2 rounded-md hover:shadow">
+    <FaFacebook size={20} className="text-blue-600" />
+  </button>
+</div>
+
+          <p className="text-center text-sm text-gray-500">
+            Don’t have an account? <span className="text-blue-500">Sign Up</span>
+          </p>
+
         </div>
-      </motion.div>
+      </div>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default SignIn;
